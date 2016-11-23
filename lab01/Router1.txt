@@ -1,0 +1,160 @@
+Router1#show run
+Building configuration...
+
+Current configuration : 2452 bytes
+!
+! Last configuration change at 13:29:22 UTC Wed Nov 16 2016 by admin
+!
+version 15.5
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname Router1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$tW6z$Sv6Jpue2iraPg8em.3l10.
+!
+no aaa new-model
+bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip dhcp pool VLAN10
+ network 192.168.1.0 255.255.255.128
+ domain-name VLAN10
+ default-router 192.168.1.1
+!
+ip dhcp pool VLAN20
+ network 192.168.1.128 255.255.255.192
+ domain-name VLAN20
+ default-router 192.168.1.129
+!
+ip dhcp pool VLAN30
+ network 192.168.1.192 255.255.255.224
+ domain-name VLAN30
+ default-router 192.168.1.193
+!
+ip dhcp pool VLAN99
+ network 192.168.1.224 255.255.255.240
+ domain-name VLAN99
+ default-router 192.168.1.225
+!
+!
+!
+no ip domain lookup
+ip domain name its.its
+ip cef
+no ipv6 cef
+multilink bundle-name authenticated
+!
+cts logging verbose
+!
+!
+license udi pid CISCO1941/K9 sn FCZ19297127
+!
+!
+username admin secret 5 $1$VqIW$mc5yOWlaTsqAvtAFkXXR50
+!
+redundancy
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.1.1 255.255.255.128
+!
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.1.129 255.255.255.192
+!
+interface GigabitEthernet0/0.30
+ encapsulation dot1Q 30
+ ip address 192.168.1.193 255.255.255.224
+!
+interface GigabitEthernet0/0.99
+ encapsulation dot1Q 99 native
+ ip address 192.168.1.225 255.255.255.240
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/0/1
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface FastEthernet0/1/0
+ no ip address
+!
+interface FastEthernet0/1/1
+ no ip address
+!
+interface FastEthernet0/1/2
+ no ip address
+!
+interface FastEthernet0/1/3
+ no ip address
+!
+interface Vlan1
+ no ip address
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ logging synchronous
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+!
+end

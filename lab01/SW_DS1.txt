@@ -1,0 +1,298 @@
+{
+    "Account": {
+        "04BDAB95-B80C-4E5C-9A5A-3021FD474934": {
+            "AccountType": 0,
+            "Bic": "xlddz",
+            "CustomerId": "122BA447-6CE0-4489-AC24-ED86C2FA1C12",
+            "DisposerIds": [
+                "122BA447-6CE0-4489-AC24-ED86C2FA1C12"
+            ],
+            "Iban": "545587"
+        },
+        "1B9CB837-FD57-4285-9465-88838598AE72": {
+            "AccountType": 0,
+            "Bic": "EASYATW",
+            "CustomerId": "122BA447-6CE0-4489-AC24-ED86C2FA1C12",
+            "DisposerIds": [
+                "122BA447-6CE0-4489-AC24-ED86C2FA1C12"
+            ],
+            "Iban": "AT53WDZNPROENRAGKXZG"
+        },
+        "E536CA52-C3C9-46F3-A787-23756084AD11": {
+            "AccountType": 0,
+            "Bic": "xlddz",
+            "CustomerId": "7831C682-6BD7-4D0E-A0D4-48408E274C2C",
+            "DisposerIds": [
+                "7831C682-6BD7-4D0E-A0D4-48408E274C2C"
+            ],
+            "Iban": "55587"
+        }
+    },
+    "CurrencyConfiguration": [
+  {
+   "Default": true,
+   "Rate": 1,
+   "Symbol": "Eur"
+  },
+  {
+   "Default": false,
+   "Rate": 1.15,
+   "Symbol": "Usd"
+  },
+  {
+   "Default": false,
+   "Rate": 1.15,
+   "Symbol": "Gbp"
+  }
+ ],
+    "Customer": {
+        "122BA447-6CE0-4489-AC24-ED86C2FA1C12": {
+            "AddrCity": "Innsbruck",
+            "AddrState": "Austria",
+            "AddrStreet": "Arzlerstrasse",
+            "AddrStreetNr": "158b",
+            "AddrZip": "6020",
+            "Birthday": "1993-03-12",
+            "FirstName": "Anna",
+            "LastName": "Sillerrr"
+        },
+        "4D0ED04D-6FD3-4F31-B231-6F4D257CD49B": {
+            "AddrCity": "Innsbruck",
+            "AddrState": "Austria",
+            "AddrStreet": "Arzlerstrasse",
+            "AddrStreetNr": "158b",
+            "AddrZip": "6020",
+            "Birthday": "1993-01-01",
+            "FirstName": "Stefdddan",
+            "LastName": "Sillerrr"
+        },
+        "7831C682-6BD7-4D0E-A0D4-48408E274C2C": {
+            "AddrCity": "Innsbruck",
+            "AddrState": "Austria",
+            "AddrStreet": "Arzlerstrasse",
+            "AddrStreetNr": "158b",
+            "AddrZip": "6020",
+            "Birthday": "1993-03-12",
+            "FirstName": "Anna",
+            "LastName": "Sillerrr"
+        },
+        "BF44BB4F-618B-490B-8257-4F97C0C26857": {
+            "AddrCity": "Innsbruck",
+            "AddrState": "Austria",
+            "AddrStreet": "Arzlerstrasse",
+            "AddrStreetNr": "158b",
+            "AddrZip": "6020",
+            "Birthday": "1993-01-01",
+            "FirstName": "Stefan",
+            "LastName": "Sillerrr"
+        },
+        "F8AF7B74-7C55-4EDE-A349-602C1F319C4A": {
+            "AddrCity": "Innsbruck",
+            "AddrState": "Austria",
+            "AddrStreet": "Arzlerstrasse",
+            "AddrStreetNr": "158b",
+            "AddrZip": "6020",
+            "Birthday": "1993-03-12",
+            "FirstName": "Stefan",
+            "LastName": "Sillerrr"
+        }
+    },
+    "Transaction": {
+        "0323ED70-75BA-460B-A0F5-93D9C6B193B2": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 00-44-04",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "11030E12-315E-40E7-8C92-475B3A8BD281": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 00-44-04",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "269C96D4-D782-4E9F-8B8E-93D137180186": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 12-56-03",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "3656D54E-FF18-4FDE-9FDA-408A2D26BE5B": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 00-51-59",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "3F27FFCE-ABE9-478E-A372-0C6482F0C062": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 12-34-12",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "41EA7C2C-529F-40B4-A209-37E784928C13": {
+            "DestAccountId": "E536CA52-C3C9-46F3-A787-23756084AD11",
+            "SourceAccountId": "cash",
+            "Timestamp": "01-11-2016 23-07-32",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "455A5B60-5C67-4E59-A8F6-955338929128": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 00-34-00",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "457334C8-12F0-4B93-97AB-E6047F875DAE": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 00-46-16",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "499AD531-13B6-43B5-ABAF-67B9FE8FC0CB": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 00-40-36",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "519E1726-26FF-4A49-96DB-E07DCB92EB50": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 12-25-37",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "5E1E4E89-71B4-4FB0-B5CB-35ADF8AD1A4B": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 12-34-12",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "5FECC851-4D57-44CD-9DC2-BD400074674C": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 00-52-51",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "67FAD697-5C63-456D-A92F-C0DEEFA2B3DF": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 12-56-03",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "694A0233-A21F-4351-8BCD-2BB9A4A4FA13": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 00-52-51",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "70626CA7-375B-4FA6-9701-68B4C2DFCB78": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 00-34-00",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "8DDDC5C3-1644-42B4-940D-247CB2FB35D9": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 00-51-59",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "BD33582D-5887-4B44-9051-177A72A3DDF7": {
+            "DestAccountId": "E536CA52-C3C9-46F3-A787-23756084AD11",
+            "SourceAccountId": "cash",
+            "Timestamp": "01-11-2016 23-05-42",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "BE3006FC-D7AF-46EE-831F-E0C35BAC80B9": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 00-51-16",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "C0BFC375-2692-4931-A70F-F3282CC0C03A": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 00-37-45",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "C2682468-C5C8-4C33-AD98-7D1A824B012F": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "E536CA52-C3C9-46F3-A787-23756084AD11",
+            "Timestamp": "01-11-2016 23-05-43",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "CD7CF0A9-E8D7-4A73-85CC-FC89451908B9": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 00-35-44",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "DC12C043-4D28-4148-9D55-534CD1216A3B": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 00-51-16",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "DD324561-A34A-4ADA-B63D-6388E7533841": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 00-40-36",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "EB8ACCC4-7585-4471-A613-9950D49B1331": {
+            "DestAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "SourceAccountId": "cash",
+            "Timestamp": "02-11-2016 00-35-44",
+            "TransactionType": 0,
+            "Value": 220.34
+        },
+        "F2BA3DAF-2505-4E60-8F36-9FCF87C71A84": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 00-37-45",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "F91ECE38-B280-44EE-8D7A-0DC29C067589": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 12-25-38",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "FAF07B8D-7F87-4915-A634-015200B60CEE": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "04BDAB95-B80C-4E5C-9A5A-3021FD474934",
+            "Timestamp": "02-11-2016 00-46-16",
+            "TransactionType": 0,
+            "Value": -110.34
+        },
+        "FCAB3CDB-884D-4B37-9AB9-670DF3F3C09B": {
+            "DestAccountId": "cash",
+            "SourceAccountId": "E536CA52-C3C9-46F3-A787-23756084AD11",
+            "Timestamp": "01-11-2016 23-07-32",
+            "TransactionType": 0,
+            "Value": -110.34
+        }
+    }
+}

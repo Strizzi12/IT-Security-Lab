@@ -1,0 +1,247 @@
+SW_AC1#show run
+Building configuration...
+
+Current configuration : 6324 bytes
+!
+! Last configuration change at 03:38:14 UTC Mon Mar 1 1993
+!
+version 15.0
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname SW_AC1
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$BIJ.$7nK2cBuQyIEgEmGrCSzzd1
+!
+username admin secret 5 $1$S6kG$JETkZgw.TXB1o82ERzu7F0
+no aaa new-model
+system mtu routing 1500
+!
+!
+ip dhcp snooping vlan 10
+ip dhcp snooping database flash
+ip dhcp snooping
+no ip domain-lookup
+ip domain-name its.its
+!
+!
+crypto pki trustpoint TP-self-signed-3276650624
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-3276650624
+ revocation-check none
+ rsakeypair TP-self-signed-3276650624
+!
+!
+crypto pki certificate chain TP-self-signed-3276650624
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 33323736 36353036 3234301E 170D3933 30333031 30333338
+  30325A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 32373636
+  35303632 3430819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281
+  8100AC12 9C8B049A BC7B09B0 3800AC9F B50B6DD2 9E2F7638 8B89989E 9A92A3FB
+  CA4F3DA8 CF0A051E 7186CDED 4AA4BA15 A80D05BA C3A4D19F 1BEB2BD4 20438A0F
+  1EFE8BEB C74E647B 156AB8D3 A90834F9 9887BFD4 929F3D89 07214174 B42A612D
+  B5C77C73 E6386CE8 9E0CA13E BDEAFF55 BB110E39 A3FFB97A AE677EAB 20BA4DF9
+  F00B0203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603
+  551D2304 18301680 148748FF 4D2529F3 69673A1F DBAF2812 1B60D0C5 C7301D06
+  03551D0E 04160414 8748FF4D 2529F369 673A1FDB AF28121B 60D0C5C7 300D0609
+  2A864886 F70D0101 05050003 81810072 67F550D2 7B9C7C67 51973288 DF471C67
+  54A6F4DB 6946AB20 1FA937AA 4FB48868 1B8B2751 7AD4B7F6 71D3462A F9165E11
+  BE29AB05 52697A34 057FA32B FCBD6FED 70E0C3FB 7D130DE7 E7BADCFA C959D1C0
+  2C4A82CD 2DC216C5 E49FF1FA 71B07A49 8376FF74 BCD36636 087354FA BC45F87B
+  A7740BC6 4364A283 C1C0A2F6 25F059
+        quit
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/1
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 4ccc.6a18.0a6b
+!
+interface FastEthernet0/2
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 4ccc.6a18.0c81
+!
+interface FastEthernet0/3
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+!
+interface FastEthernet0/4
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+!
+interface FastEthernet0/5
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+!
+interface FastEthernet0/6
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+!
+interface FastEthernet0/7
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+!
+interface FastEthernet0/8
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 4ccc.6a19.e80d
+!
+interface FastEthernet0/9
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+!
+interface FastEthernet0/10
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+!
+interface FastEthernet0/11
+ switchport access vlan 30
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+!
+interface FastEthernet0/12
+ switchport access vlan 30
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 4ccc.6a18.0c81
+!
+interface FastEthernet0/13
+ switchport access vlan 30
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 4ccc.6a18.0a6b
+!
+interface FastEthernet0/14
+ switchport access vlan 30
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+!
+interface FastEthernet0/15
+ switchport access vlan 30
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+!
+interface FastEthernet0/16
+ switchport access vlan 99
+ switchport mode access
+ shutdown
+!
+interface FastEthernet0/17
+ shutdown
+!
+interface FastEthernet0/18
+ shutdown
+!
+interface FastEthernet0/19
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+ switchport mode trunk
+ ip dhcp snooping trust
+!
+interface FastEthernet0/20
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+ switchport mode trunk
+ ip dhcp snooping trust
+!
+interface FastEthernet0/21
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+ switchport mode trunk
+ shutdown
+ ip dhcp snooping trust
+!
+interface FastEthernet0/22
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+ switchport mode trunk
+ shutdown
+ ip dhcp snooping trust
+!
+interface FastEthernet0/23
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+ switchport mode trunk
+ ip dhcp snooping trust
+!
+interface FastEthernet0/24
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+ switchport mode trunk
+ ip dhcp snooping trust
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan99
+ ip address 192.168.1.227 255.255.255.240
+!
+ip default-gateway 192.168.1.225
+ip http server
+ip http secure-server
+!
+banner motd ^CC
+Unauthorized access prohibited! ^C
+!
+line con 0
+ logging synchronous
+line vty 0 4
+ password 7 1511021F0725
+ logging synchronous
+ login local
+ transport input ssh
+line vty 5 15
+ login
+!
+end

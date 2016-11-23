@@ -1,0 +1,387 @@
+%%% File-Information {{{
+%%% Filename: LBProtokoll.tex
+%%% Purpose: lab report, technical report, project report
+%%% Adopted by: Simon Kranzer, Cornelia Ferner
+%%% Orig. Authors: The LaTeX@TUG-Team [http://latex.tugraz.at/]:
+%%%          Karl Voit (vk), Michael Prokop (mp), Stefan Sollerer (ss)
+%%% History:
+%%%   20100115 (sk) adopted for use in german speaking countries / added some usefull packages
+%%%   20050914 (ss) correction of "backref=true" to "backref" due to hyperref documentation
+%%%   20040630 (mp) added comments to foldmethod at end of file
+%%%   20040625 (vk,ss) initial version 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper, ...
+% landscape,   %% sets the orientation to landscape
+% twoside,     %% changes to a two-page-layout (alternatively: oneside)
+% twocolumn,   %% changes to a two-column-layout
+% headsepline, %% add a horizontal line below the column title
+% footsepline, %% add a horizontal line above the page footer
+% titlepage,   %% only the titlepage (using titlepage-environment) appears on the first page (alternatively: notitlepage)
+% parskip,     %% insert an empty line between two paragraphs (alternatively: halfparskip, ...)
+% leqno,       %% equation numbers left (instead of right)
+% fleqn,       %% equation left-justified (instead of centered)
+% tablecaptionabove, %% captions of tables are above the tables (alternatively: tablecaptionbelow)
+% draft,       %% produce only a draft version (mark lines that need manual edition and don't show graphics)
+% 10pt         %% set default font size to 10 point
+11pt         %% set default font size to 11 point
+% 12pt         %% set default font size to 12 point
+]{scrartcl}  %% article, see KOMA documentation (scrguide.dvi)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% packages
+%%%
+
+%%%
+%%% encoding and language set
+%%%
+
+%%% ngerman: language set to new-german
+%\usepackage{ngerman}
+
+%%% babel: language set (can cause some conflicts with package ngerman)
+%%%        use it only for multi-language documents or non-german ones
+%\usepackage[ngerman]{babel}
+
+%%% inputenc: coding of german special characters
+\usepackage[utf8]{inputenc}   % Zeichensatz, ermöglicht die direkte Eingabe von Umlauten im Editor
+\usepackage[english]{babel}   % Silbentrennung nach der neuen deutschen Rechtschreibung, z.B.: Sys-tem
+\usepackage[none]{hyphenat}  % Deaktiviert die Silbentrennung
+
+%%% fontenc, ae, aecompl: coding of characters in PDF documents
+\usepackage[T1]{fontenc}
+\usepackage{ae,aecompl}
+\usepackage[scaled]{uarial}
+%\usepackage[top=1.5in, bottom=1.5in, left=1.5in, right=1.5in]{geometry}
+
+\addto\captionsenglish{% Replace "english" with the language you use
+  \renewcommand{\contentsname}%
+    {Table of Contents}%
+}
+
+%%%
+%%% technical packages
+%%%
+
+%%% amsmath, amssymb, amstext: support for mathematics
+\usepackage{amsmath,amssymb,amstext}
+
+%%% psfrag: replace PostScript fonts
+\usepackage{psfrag}
+
+%%% listings: include programming code
+\usepackage{listings}
+\usepackage{microtype}
+
+
+\usepackage[numbers, square]{natbib}   % F�r \setlength{\bibsep}{3mm}; square macht eckige Klammern
+
+%%% units: technical units
+%\usepackage{units}
+
+%%% kv diagrams
+\input{kvmacros}
+
+%%% tables
+\usepackage[table]{xcolor}
+\usepackage{array}
+
+%% graphics
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage[hyphens]{url}
+
+% configuration for the listing part
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  %commentstyle=\color{red},
+  %keywordstyle=\color{blue},
+  frame=single,
+  language=bash
+}
+
+%%%
+%%% layout
+%%%
+
+%%% scrpage2: KOMA heading and footer
+%%% Note: if you don't use this package, please remove 
+%%%       \pagestyle{scrheadings} and corresponding settings
+%%%       below too.
+\usepackage[automark]{scrpage2}
+
+%%%
+\usepackage{float}
+\restylefloat{table}
+\usepackage{pdfpages}
+%%%
+%%% PDF
+%%%
+
+\usepackage{ifpdf}
+
+%%% Should be LAST usepackage-call!
+%%% For docu on that, see reference on package ``hyperref''
+\ifpdf%   (definitions for using pdflatex instead of latex)
+
+  %%% graphicx: support for graphics
+  %% \usepackage[pdftex]{graphicx}
+
+  \pdfcompresslevel=9
+
+  %%% hyperref (hyperlinks in PDF): for more options or more detailed
+  %%%          explanations, see the documentation of the hyperref-package
+  \usepackage[%
+    %%% general options
+    pdftex=true,      %% sets up hyperref for use with the pdftex program
+    %plainpages=false, %% set it to false, if pdflatex complains: ``destination with same identifier already exists''
+    %
+    %%% extension options
+    %backref,      %% adds a backlink text to the end of each item in the bibliography
+    %pagebackref=false, %% if true, creates backward references as a list of page numbers in the bibliography
+    colorlinks=true,   %% turn on colored links (true is better for on-screen reading, false is better for printout versions)
+    %
+    %%% PDF-specific display options
+    bookmarks=true,          %% if true, generate PDF bookmarks (requires two passes of pdflatex)
+    bookmarksopen=true,     %% if true, show all PDF bookmarks expanded
+    bookmarksnumbered=false, %% if true, add the section numbers to the bookmarks
+    %pdfstartpage={1},        %% determines, on which page the PDF file is opened
+    pdfpagemode=UseOutlines         %% UseNone, UseOutlines (=show bookmarks), UseThumbs (show thumbnails), FullScreen
+  ]{hyperref}
+
+
+  %%% provide all graphics (also) in this format, so you don't have
+  %%% to add the file extensions to the \includegraphics-command
+  %%% and/or you don't have to distinguish between generating
+  %%% dvi/ps (through latex) and pdf (through pdflatex)
+  \DeclareGraphicsExtensions{.pdf}
+
+\else %else   (definitions for using latex instead of pdflatex)
+
+  %% \usepackage[dvips]{graphicx}
+
+  \DeclareGraphicsExtensions{.eps}
+
+  \usepackage[%
+    dvips,           %% sets up hyperref for use with the dvips driver
+    colorlinks=false %% better for printout version; almost every hyperref-extension is eliminated by using dvips
+  ]{hyperref}
+
+\fi
+
+
+%%% sets the PDF-Information options
+%%% (see fields in Acrobat Reader: ``File -> Document properties -> Summary'')
+%%% Note: this method is better than as options of the hyperref-package (options are expanded correctly)
+\hypersetup{
+  pdftitle={}, %%
+  pdfauthor={}, %%
+  pdfsubject={}, %%
+  pdfcreator={
+  }, %% 
+  pdfproducer={}, %%
+  pdfkeywords={} %%
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% user defined commands
+%%%
+
+%%% \mygraphics{}{}{}
+%% usage:   \mygraphics{width}{filename_without_extension}{caption}
+%% example: \mygraphics{0.7\textwidth}{rolling_grandma}{This is my grandmother on inlinescates}
+%% requires: package graphicx
+%% provides: including centered pictures/graphics with a boldfaced caption below
+%% 
+\newcommand{\mygraphics}[3]{
+  \begin{center}
+    \includegraphics[width=#1, keepaspectratio=true]{#2} \\
+    \textbf{#3}
+  \end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% define the titlepage
+%%%
+
+% \publishers{}
+
+% \thanks{} %% use it instead of footnotes (only on titlepage)
+
+% \dedication{} %% generates a dedication-page after titlepage
+
+
+%%% uncomment following lines, if you want to:
+%%% reuse the maketitle-entries for hyperref-setup
+%\newcommand\org@maketitle{}
+%\let\org@maketitle\maketitle
+%\def\maketitle{%
+%  \hypersetup{
+%    pdftitle={\@title},
+%    pdfauthor={\@author}
+%    pdfsubject={\@subject}
+%  }%
+%  \org@maketitle
+%}
+\title{
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=0.3\textwidth]{fhs_logo_web.png}
+	\end{figure}
+	\vspace{2cm}
+	\Huge Laboratory I
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% set heading and footer
+%%%
+
+%%% scrheadings default: 
+%%%      footer - middle: page number
+\pagestyle{scrheadings}
+
+%%% user specific
+%%% usage:
+%%% \position[heading/footer for the titlepage]{heading/footer for the rest of the document}
+
+%%% heading - left
+\ihead[]{Internet Infrastructure and Security}
+
+%%% heading - center
+\chead[]{}
+
+%----------hier Namen der Autoren eintragen----------
+%%% heading - right
+\ohead[]{Binna, Reschenhofer, Schörghofer}
+%----------------------------------------------------
+
+%----------hier ggf. Semester �ndern-----------------
+%%% footer - left
+\ifoot[]{}
+%----------------------------------------------------
+
+%%% footer - center
+\cfoot[]{\thepage}
+
+%%% footer - right
+\ofoot[]{}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% begin document  
+%%%
+
+\begin{document}
+
+ \pagenumbering{roman} %% small roman page numbers
+
+%%% include the title
+ \thispagestyle{empty}  %% no header/footer (only) on this page
+ 	\vspace{1cm}
+ 	
+ 	% if you are the only author, you might use the following
+ 	\author{Binna, Reschenhofer, Schörghofer}
+ 	\vspace{1cm}
+ 	
+ 	% Insert here your name and correct mail address
+ 	%\author{\Large \href{mailto:first.student@smail.fh-koeln.de}{First Student} \and \Large \href{mailto:second.student@smail.fh-koeln.de}{Second Student}
+ 	%\vspace{1cm}}
+ 	
+ 	% name of the course and module
+ 	\date{
+ 		\large Course: Internet Infrastructure and Security \\ 
+ 		\vspace{0.8cm}
+ 		\large Lecturer: FH-Prof. DI Mag. Dr. Dominik Engel \\
+ 		\vspace{1cm}
+ 		\large 22.11.2016
+ 	}
+ \maketitle
+ 
+
+%%% display the table of contents
+\newpage
+\vfill
+\hypersetup{linkcolor=black}
+ \tableofcontents
+
+%%% start a new page and display the list of figures
+% \newpage
+% \listoffigures
+
+%%% start a new page and display the list of tables
+% \newpage
+% \listoftables
+
+%%% display the main document on a new page 
+ \newpage
+ \pagenumbering{arabic} %% normal page numbers (include it, if roman was used above)
+ \setcounter{section}{0} %% Reset section counter
+ \setcounter{page}{1}
+ \setcounter{secnumdepth}{5}
+ 
+ %% Numbering Style of Sections: Arabic
+ \renewcommand{\thesection}{\arabic{section}}
+ \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+
+\setlength{\parindent}{0pt}
+
+\bibliographystyle{IEEEtran}
+\setlength{\bibsep}{3mm}
+
+%%% include content.tex-file (holds the actual content)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% begin document
+%%% structure: \section \subsection \subsubsection \paragraph \subparagraph
+%%%
+
+\section{General}
+%\newpage
+%\section*{Quellen}
+%\url{https://en.wikipedia.org/wiki/Cross-site_scripting} \\
+
+%\newpage
+%\bibliography{bibliografie}
+
+\section{Config files}
+
+The following config files represent the running config of the three switches and the router. The output has been reformatted and unnecessary things omitted.
+
+\subsection{s1}
+
+\subsection{s2}
+
+\subsection{s3}
+
+\subsection{r1}
+
+\begin{lstlisting}
+a
+c
+d
+e
+d
+d
+\end{lstlisting}
+
+\newpage
+\listoffigures
+%\newpage
+%\listoftables
+\end{document}
+%%% }}}
+%%% END OF FILE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
