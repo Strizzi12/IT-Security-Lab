@@ -1,10 +1,5 @@
-Router1#show run
-Building configuration...
+Router1#
 
-Current configuration : 2452 bytes
-!
-! Last configuration change at 13:29:22 UTC Wed Nov 16 2016 by admin
-!
 version 15.5
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -15,20 +10,10 @@ hostname Router1
 boot-start-marker
 boot-end-marker
 !
-!
 enable secret 5 $1$tW6z$Sv6Jpue2iraPg8em.3l10.
 !
 no aaa new-model
 bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
-!
-!
-!
-!
-!
-!
-!
-!
-!
 !
 ip dhcp pool VLAN10
  network 192.168.1.0 255.255.255.128
@@ -50,8 +35,6 @@ ip dhcp pool VLAN99
  domain-name VLAN99
  default-router 192.168.1.225
 !
-!
-!
 no ip domain lookup
 ip domain name its.its
 ip cef
@@ -60,18 +43,11 @@ multilink bundle-name authenticated
 !
 cts logging verbose
 !
-!
 license udi pid CISCO1941/K9 sn FCZ19297127
-!
 !
 username admin secret 5 $1$VqIW$mc5yOWlaTsqAvtAFkXXR50
 !
 redundancy
-!
-!
-!
-!
-!
 !
 interface Embedded-Service-Engine0/0
  no ip address
@@ -133,13 +109,7 @@ ip forward-protocol nd
 no ip http server
 no ip http secure-server
 !
-!
-!
-!
-!
 control-plane
-!
-!
 !
 line con 0
  logging synchronous
