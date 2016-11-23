@@ -1,10 +1,5 @@
-SW_AC2#show run
-Building configuration...
+SW_AC2#
 
-Current configuration : 3962 bytes
-!
-! Last configuration change at 03:05:14 UTC Mon Mar 1 1993 by admin
-!
 version 15.0
 no service pad
 service timestamps debug datetime msec
@@ -22,28 +17,16 @@ username admin secret 5 $1$QqX4$w.wu/m/mObK7adm721ycS0
 no aaa new-model
 system mtu routing 1500
 !
-!
 ip dhcp snooping vlan 10,20,30,99
 ip dhcp snooping database flash
 ip domain-name its.its
 !
 password encryption aes
 !
-!
-!
-!
-!
-!
-!
 spanning-tree mode pvst
 spanning-tree extend system-id
 !
 vlan internal allocation policy ascending
-!
-!
-!
-!
-!
 !
 interface FastEthernet0/1
  switchport access vlan 10
