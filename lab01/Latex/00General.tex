@@ -9,15 +9,9 @@ openright,                    % Kap.beginn immer rechts! (fkt. nur bei report, n
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Dokumenteneigenschaften
 
-\newcommand{\Author}{Mr. Stefan Binna} 
-\newcommand{\Title}{Renewal of the IT Infrastructure of the Royal Institute for Tourism \& Hospitality in Thimphu/Bhutan}
-\newcommand{\Keywords}{KEYWORD 1, KEYWORD 2, KEYWORD 3, KEYWORD 4, KEYWORD 5}
-\newcommand{\Advisor}{DI Norbert Egger}
-\newcommand{\Companyadvisor}{Mag. Leonhard W\"orndl}
-\newcommand{\Birthdate}{03.12.1993}
-\newcommand{\EnrolNum}{1410555001}
-\newcommand{\VenueMonthYear}{Thimphu/Bhutan, May 2016}
-\newcommand{\VenueDate}{Thimphu, am 01.05.2016}
+\newcommand{\Author}{} 
+\newcommand{\Title}{}
+\newcommand{\Keywords}{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Layout zusammengestellt von Richard Wanger im WS 2015/2016. Verschiedene Vorlagen wurden bei der Erstellung
@@ -31,7 +25,6 @@ openright,                    % Kap.beginn immer rechts! (fkt. nur bei report, n
 
 \begin{document}
 \include{01Titelblatt}
-%\include{04Danksagung}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %VERZEICHNISSE
@@ -43,8 +36,8 @@ openright,                    % Kap.beginn immer rechts! (fkt. nur bei report, n
 \tableofcontents
 \protect \addcontentsline{toc}{chapter}{Table of Contents}
 
-\renewcommand{\nomname}{List of Abbreviations}
-\include{05Abkuerzungsverzeichnis}
+%\renewcommand{\nomname}{List of Abbreviations}
+%\include{05Abkuerzungsverzeichnis}
 
 %\listoffigures
 %\protect \addcontentsline{toc}{chapter}{List of Figures}
@@ -64,38 +57,23 @@ openright,                    % Kap.beginn immer rechts! (fkt. nur bei report, n
 
 \clearpage
 \pagenumbering{arabic}
-\include{19Einleitung}
-
-\clearpage
-%\pagenumbering{arabic}
-%\include{20Theorie}
-
-\clearpage
-%\pagenumbering{arabic}
-\include{21Praxis}
-
-\clearpage
-%\include{22Zusammenfassung}
+\include{15Content}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LITERATURVERZEICHNIS
 
-\interlinepenalty=10000 % Literatureinträge: Absätze zusammenhalten
-\clearpage
-\addcontentsline{toc}{chapter}{Literatur}
-\singlespace
-\bibliography{12bibliografie}
-\interlinepenalty=100
+%\interlinepenalty=10000 % Literatureinträge: Absätze zusammenhalten
+%\clearpage
+%\addcontentsline{toc}{chapter}{Literatur}
+%\singlespace
+%\bibliography{12bibliografie}
+%\interlinepenalty=100
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ANHÄNGE
 
 \begin{appendix}
-%\include{Anhang_Mathematik}                 % A
-%\include{Anhang_FormatDerParameterdateien}  % B
-%\include{Anhang_Quelltexte}                 % C
-%\include{Anhang_Datenblaetter}              % D
-%\include{Anhang_Glossar}                    % E
+%\include{20Anhang}
 \end{appendix}
 
 \end{document}
