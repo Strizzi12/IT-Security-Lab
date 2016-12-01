@@ -195,7 +195,7 @@ The IP addresses were assigned beginning with \texttt{192.168.1.225} for the rou
 For \ac{SSH} access a domain name and a user had to be created.
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
-\begin{lstlisting}[caption={SSH},label={lst:ssh},language={}]
+\begin{lstlisting}[caption={SSH and user creation},label={lst:ssh},language={}]
 conf terminal
 ip domain-name its.its
 crypto key generate rsa 1024
@@ -206,5 +206,72 @@ transport input ssh
 \end{lstlisting}
 
 The commands from listing \ref{lst:ssh} will create this. The key length has been set to 1024 bit for convenience, as it would take more time to create a key with a length of 2048 bit.
+
+\chapter{Layer 2 Security}
+
+In this chapter Layer 2 security was applied to the switches.
+
+First, unused switchport were shut down, as can be seen in listing \ref{unused}.
+
+\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
+\begin{lstlisting}[caption={Shutdown unused ports},label={lst:unused},language={}]
+conf terminal
+ip range fa0/3 - 20
+shutdown
+\end{lstlisting}
+
+This command has been adopted on the switches, this example was applied on \texttt{SW\_DS1}.
+
+Another security feature is to allow only a certain amount of \ac{MAC} addresses per switchport and deactivate the port if more addresses are seen from it.
+
+\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
+\begin{lstlisting}[caption={Sticky MAC addresses},label={lst:mac},language={}]
+conf terminal
+ip range fa0/11 - 15
+ switchport port-security
+ switchport port-security mac-address sticky 1
+ switchport port-security violation shutdown
+\end{lstlisting}
+
+In listing \ref{lst:mac} such a configuration can be seen. The maximum allowed \ac{MAC} addresses is set to 1. Meaning only one device is allowed on that port, if a violation of that rule should occur the port will be shut down and has to be reactivate manually.
+
+\chapter{DHCP}
+
+\ac{DHCP} is a method to distribute IP addresses in a network automatically. \ac{DHCP} clients are available on nearly every operating system.
+
+The router was configured to act as \ac{DHCP} server, distributing IP addresses to clients in the \ac{VLAN}s.
+
+\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
+\begin{lstlisting}[caption={DHCP},label={lst:dhcp},language={}]
+ip dhcp pool VLAN10
+ network 192.168.1.0 255.255.255.128
+ domain-name VLAN10
+ default-router 192.168.1.1
+\end{lstlisting}
+
+With these commands (\ref{lst:dhcp}) the router will act as a \ac{DHCP} server and will distribute IP addresses in the \texttt{192.168.1.0/25} subnet. Those commands were also entered for the other VLANs.
+
+\section{DHCP Snopping}
+
+DHCP Snooping is a method to block rogue DHCP servers which can handle out wrong IP addresses. It can also be used to limit the amount of IP addresses a port can request in a given amount of time, to counter IP address shortage. DHCP responses may also be only allowed from certain ports, not access ports where clients are connected.
+As DHCP has no authentication method this must be used if security is important.
+
+\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
+\begin{lstlisting}[caption={DHCP Snooping},label={lst:dhcp_snop},language={}]
+ip dhcp snooping vlan 10,20,30,99
+ip dhcp snooping database flash
+ip dhcp snooping
+
+int fa0/21
+ip dhcp snooping trust
+\end{lstlisting}
+
+The access switches have been configured for DHCP snooping, as can be seen in listing \ref{lst:dhcp_snop}. The trunk ports have been configured as trusted DHCP interfaces.
+
+To test this setup, we removed the trust from one of the interfaces, and tried to get an IP from the router, which then failed.
+
+However, a rogue DHCP server in the same subnet was still possible. We could not determine what caused this, as the binding table remained empty, even if a DHCP lease was given out to a valid client.
+
+Most likely the \texttt{no ip dhcp snooping trust} and \texttt{ip dhcp snooping limit rate 10} had to be used on the access ports, but we did not use this command, so this might be the reason it did not work as expected. The last command would have limited the amount of DHCP packets to 10 per minute.
 
 
