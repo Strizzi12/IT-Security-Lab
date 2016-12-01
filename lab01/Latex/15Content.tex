@@ -172,3 +172,39 @@ For the native VLAN, the encapsulation line had been changed to:
 \texttt{encapsulation dot1Q 99 native}
 
 to mark VLAN 99 as the native VLAN.
+
+\chapter{Remote Administraion}
+
+In this chapter remote access via \ac{SSH} had to be configured for each switch and the router.
+
+The management interface on the switches was created in the management \ac{VLAN}.
+
+\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
+\begin{lstlisting}[caption={Management interface},label={lst:sw99},language={}]
+conf terminal
+interface Vlan99
+ ip address 192.168.1.226 255.255.255.240
+ no shutdown
+\end{lstlisting}
+
+The IP addresses were assigned beginning with \texttt{192.168.1.225} for the router and ending with \texttt{192.168.228} for \texttt{SW\_AC2}.
+
+\section{SSH}
+
+\ac{SSH}(v2) is a protocol for a secure connection to another device which should be used instead of insecure protocols like Telnet.
+For \ac{SSH} access a domain name and a user had to be created.
+
+\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
+\begin{lstlisting}[caption={SSH},label={lst:ssh},language={}]
+conf terminal
+ip domain-name its.its
+crypto key generate rsa 1024
+username admin secret cisco
+line vty 0 4
+login local
+transport input ssh
+\end{lstlisting}
+
+The commands from listing \ref{lst:ssh} will create this. The key length has been set to 1024 bit for convenience, as it would take more time to create a key with a length of 2048 bit.
+
+
