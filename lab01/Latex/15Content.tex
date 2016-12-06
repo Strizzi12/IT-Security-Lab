@@ -27,7 +27,7 @@ The first usable IP address in each subnet was assigned to the subinterface of t
 
 \chapter{Topology}
 
-The following topology (figure \ref{img:topo}, taken from the moodle instructions) had to be recreated in the lab.
+The following topology (figure \ref{img:topo}, taken from the Moodle instructions) had to be recreated in the lab.
 
 \begin{figure}[H]
 	\centering
@@ -53,7 +53,7 @@ line con 0
 	synchronous logging
 \end{lstlisting}
 
-These settings were applied to every device, with a respectively different hostname.
+These settings were applied to every device, with the hostnames set accordingly.
 
 \section{Spanning Tree}
 
@@ -155,7 +155,7 @@ The access ports have been configured on both \texttt{SW\_AC1} and \texttt{SW\_A
 The native VLAN is 99, which is also the management VLAN. From a security point of view it's not recommended to set the native VLAN to the same as the management VLAN. \\ 
 The native VLAN will not be tagged (802.1Q) when transmitted through the trunk port. For ease of configuration some unused ports where assigned to the Management VLAN.
 
-To test this configuration we put a PC in each VLAN on each switch and used the `ping' tool for verification, which showed a successful configuration.
+To test this configuration we put a PC in each VLAN on each switch and used the `ping' tool for verification, which showed a successfull configuration.
 
 % ausgabe einf�gen?
 
