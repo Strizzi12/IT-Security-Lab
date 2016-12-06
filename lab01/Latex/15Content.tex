@@ -3,7 +3,7 @@
 \thispagestyle{standard}
 \pagestyle{standard}
 
-The given network was a 192.168.1.0/24 network, which had to be divided into 4 subnets. Each subnet had its own \ac{VLAN}.
+The given network was 192.168.1.0/24, which had to be divided into 4 subnets. Each subnet corresponded to a specific \ac{VLAN}.
 
 \begin{table}[h]
 \centering
@@ -21,13 +21,13 @@ The given network was a 192.168.1.0/24 network, which had to be divided into 4 s
 \label{tab:vlan_subnets}
 \end{table}
 
-The final subnetting that was used in the lab can be seen in table  \ref{tab:vlan_subnets}.
+The final subnets that were used in the lab can be seen in table  \ref{tab:vlan_subnets}.
 
-The first usable IP address in each subnet was given to the router to that subnet.
+The first usable IP address in each subnet was assigned to the subinterface of that network at the router.
 
 \chapter{Topology}
 
-The following topology (Figure \ref{img:topo}, taken from the Moodle instructions, had to be recreated in the lab.
+The following topology (figure \ref{img:topo}, taken from the moodle instructions) had to be recreated in the lab.
 
 \begin{figure}[H]
 	\centering
@@ -38,7 +38,7 @@ The following topology (Figure \ref{img:topo}, taken from the Moodle instruction
 
 \section{Basic configuration}
 
-Each device was configured with basic settings like hostname, \ac{MOTD} and a password.
+Each device was configured with basic settings like hostname, \ac{MOTD}, a secret enable password, disabled IP domain lookup, synchronous logging on line console 0 and the service password-encryption, which prevents passwords from being displayed in cleartext in the start-up and running configuration.
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={Basic configuration},label={lst:debug_s3},language={}]
@@ -48,15 +48,16 @@ hostname SW_AC1
 banner motd # Unauthorized access prohibited! #
 enable secret cisco
 service password-encryption
+no ip domain-lookup
+line con 0
+	synchronous logging
 \end{lstlisting}
 
-These few lines would set hostname and the \ac{MOTD} and encrypt the configured password `cisco'.
-
-These settings were applied onto every device, with the hostname changed.
+These settings were applied to every device, with a respectively different hostname.
 
 \section{Spanning Tree}
 
-The use of the \ac{STP} allows to detect loops in the network and creates a first redundancy layer. \ac{STP} uses a tree structure in which every Switch (bridge) in the network knows the best path to the root bridge. Redundant paths to the root bridge will be blocked for normal traffic.
+The use of the \ac{STP} allows to detect loops in the network and creates a first redundancy layer. \ac{STP} uses a tree structure in which every switch (bridge) in the network knows the best path to the root bridge. Redundant paths to the root bridge will be blocked for normal traffic.
 
 \texttt{SW\_DS1} had to be configured as root bridge.
 
@@ -67,15 +68,15 @@ spanning-tree mode pvst
 spanning-tree vlan 1,10,20,30,99 priority 4096
 \end{lstlisting}
 
-This is the configuration for the root bridge. The bridge with the lowest bridge ID will become root bridge. In this configuration the ID is \texttt{4096}, the other switches in the network have been set to a higher bridge ID to ensure that \texttt{SW\_DS1} becomes root.
+This is the configuration for the root bridge. The bridge with the lowest bridge ID will become root bridge. In this configuration the ID is \texttt{4096}. The other switches in the network have been left at the default priority which is higher and enables \texttt{SW\_DS1} to become root.
 
-The \ac{PVST} mode has been used to spawn a \ac{STP} instance per VLAN. This would allow to load balance certain \ac{VLAN}s to different paths, but this was not used in this lab. The \ac{PVST} mode was used for all configured \ac{VLAN}s.
+The \ac{PVST} mode has been used to spawn a \ac{STP} instance per VLAN. This would allow load balancing of certain \acp{VLAN} to different paths, but this was not used in this lab. The \ac{PVST} mode was used for all configured \ac{VLAN}s.
 
 \chapter{VTP}
 
-The \ac{VTP} allows the distribution of configured \ac{VLAN}s to all switches in the VTP domain. This allows easier reconfiguration of VLANs. For this one switch has to act as the VTP server, while the other ones get the configuration from the server.
+The \ac{VTP} allows the distribution of configured \ac{VLAN}s to all switches in the VTP domain. This allows easier reconfiguration of VLANs. For VTP to work one switch has to act as the VTP server and the switches that need to receive the configuration have to be set as VTP clients.
 
-Similar to the STP root bridge, \texttt{SW\_DS1} had to be configured as \ac{VTP} server.
+Similar to the STP root bridge, \texttt{SW\_DS1} had to be configured to act as \ac{VTP} server.
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={\ac{VTP} and VLAN},label={lst:vtps},language={}]
@@ -86,31 +87,35 @@ vlan 99 name Management
 
 vtp mode server
 vtp version 2
-vtp lab
-vtp cisco
+vtp domain lab
+vtp password cisco
 \end{lstlisting}
 
-Those commands created the 4 \ac{VLAN}s and the \ac{VTP} server on \texttt{SW\_DS1}.
+The commands listed above create the 4 \acp{VLAN} and the \ac{VTP} server on \texttt{SW\_DS1}.
 
-Version 2 had to be used, as we encountered some problems with \ac{VTP} version 3.
-\\
+Version 2 had to be used, as we encountered the following problem when using VTP V3:
 
+VTP V3 rejected the deletion of \acp{VLAN} on the VTP server as well as on the VTP clients. The following error message appeared when trying to delete VLANs: \\
+\textit{VTP VLAN configuration not allowed when device is not the primary server for vlan database.}
 
-The client configuration for the switches can be seen in \ref{lst:vtps}.
+Moreover important was to explicitly set a VTP password, otherwise the following message may appear: \\
+\textit{*** MD5 digest checksum mismatch on trunk: Fa0/xx ***}
+
+The client configuration for the switches can be seen in listing \ref{lst:vtps}.
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={\ac{VTP} client},label={lst:vtps},language={}]
 vtp mode client
 vtp version 2
-vtp lab
-vtp cisco
+vtp domain lab
+vtp password cisco
 \end{lstlisting}
 
 \chapter{\ac{VLAN} setup}
 
 In this chapter, the ports on the switch had to be configured as either VLAN access ports, or trunk ports for the uplinks to the other switches.
 
-The assignment from VLAN to port can be seen in table \ref{tab:vlan_ports}.
+The port VLAN assignment can be seen in table \ref{tab:vlan_ports}.
 
 \begin{table}[h]
 \centering
@@ -136,9 +141,6 @@ switchport mode access
 switchport access vlan 10
 \end{lstlisting}
 
-The commands in \ref{lst:accport} have been adapted for the different VLANs.
-The access ports have been configured on both \texttt{SW\_AC1} and \texttt{SW\_AC2}.
-
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={Trunk port configuration},label={lst:accport},language={}]
 int fa0/21
@@ -147,25 +149,29 @@ switchport trunk allowed vlan 10,20,30,99
 switchport trunk native vlan 99
 \end{lstlisting}
 
-The native VLAN is 99, which is also the management VLAN, which may not be wise from a security point of view. The native VLAN will not be tagged (802.1Q) when transmitted through the trunk port. For ease of configuration some unused ports where assigned to the Management VLAN.
+The commands in listing \ref{lst:accport} have been adapted to match the different VLANs.
+The access ports have been configured on both \texttt{SW\_AC1} and \texttt{SW\_AC2}.
 
-To test this configuration we put a PC in each VLAN on each switch and used the `ping' tool, which showed a successful configuration.
+The native VLAN is 99, which is also the management VLAN. From a security point of view it's not recommended to set the native VLAN to the same as the management VLAN. \\ 
+The native VLAN will not be tagged (802.1Q) when transmitted through the trunk port. For ease of configuration some unused ports where assigned to the Management VLAN.
 
-% ausgabe einfügen?
+To test this configuration we put a PC in each VLAN on each switch and used the `ping' tool for verification, which showed a successful configuration.
+
+% ausgabe einfï¿½gen?
 
 \chapter{Inter-VLAN Routing}
 
-To make communication between the VLANs possible a router needs to be used. The router has an IP address (see table \ref{tab:vlan_subnets}) in each subnet. All PCs can therefore reach the router.
+To make communication between the VLANs possible a router needs to be used. This type of setup is normally known as router on a stick. Subinterfaces with IP addresses for each subnets (see table \ref{tab:vlan_subnets}) have been configured. Thus all PCs are able to communicate with the router and also with PCs on different subnets (when the default gateway on the PCs is correctly set to the IP address of the subinterface on the router).
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={Router configuration},label={lst:routervlan},language={}]
 conf terminal
-int Gig0/0.10
+int gig0/0.10
 encapsulation dot1q 10
 ip address 192.168.1.1 255.255.255.128
 \end{lstlisting}
 
-The commands in listing \ref{lst:routervlan} will create a subinterface on gig0/1 and set the encapsulation to the IEEE 802.1Q standard. Then an IP address is assigned to that interface. This commands have been adopted for every VLAN.
+The commands in listing \ref{lst:routervlan} will create a subinterface on gig0/1 and set the encapsulation to the IEEE 802.1Q standard. Then an IP address is assigned to that interface. This commands have been adopted for every subinterface.
 
 For the native VLAN, the encapsulation line had been changed to:
 
@@ -191,8 +197,8 @@ The IP addresses were assigned beginning with \texttt{192.168.1.225} for the rou
 
 \section{SSH}
 
-\ac{SSH}(v2) is a protocol for a secure connection to another device which should be used instead of insecure protocols like Telnet.
-For \ac{SSH} access a domain name and a user had to be created.
+\ac{SSH}(v2) is a protocol for a secure connection to another device which should be used instead of insecure protocols like telnet.
+For \ac{SSH} access a domain name, a user and certificates have to be created.
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={SSH and user creation},label={lst:ssh},language={}]
@@ -205,13 +211,13 @@ login local
 transport input ssh
 \end{lstlisting}
 
-The commands from listing \ref{lst:ssh} will create this. The key length has been set to 1024 bit for convenience, as it would take more time to create a key with a length of 2048 bit.
+The commands from listing \ref{lst:ssh} will configure SSH on the device. The key length has been set to 1024 bit for convenience, as it would take more time to create a key with a length of 2048 bit. Moreover, the virtual terminal line has been configured to only allow ssh input and use the local database for authentication.
 
 \chapter{Layer 2 Security}
 
 In this chapter Layer 2 security was applied to the switches.
 
-First, unused switchport were shut down, as can be seen in listing \ref{unused}.
+First, unused switchports were shut down, as seen in listing \ref{lst:unused}.
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={Shutdown unused ports},label={lst:unused},language={}]
@@ -220,9 +226,9 @@ ip range fa0/3 - 20
 shutdown
 \end{lstlisting}
 
-This command has been adopted on the switches, this example was applied on \texttt{SW\_DS1}.
+This command has been adopted to all switches, the example was applied to \texttt{SW\_DS1}.
 
-Another security feature is to allow only a certain amount of \ac{MAC} addresses per switchport and deactivate the port if more addresses are seen from it.
+Another security feature was to allow only a certain amount of \ac{MAC} addresses per switchport and deactivate the port if more addresses are seen.
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={Sticky MAC addresses},label={lst:mac},language={}]
@@ -233,11 +239,11 @@ ip range fa0/11 - 15
  switchport port-security violation shutdown
 \end{lstlisting}
 
-In listing \ref{lst:mac} such a configuration can be seen. The maximum allowed \ac{MAC} addresses is set to 1. Meaning only one device is allowed on that port, if a violation of that rule should occur the port will be shut down and has to be reactivate manually.
+Listing \ref{lst:mac} shows such a configuration. The maximum allowed \ac{MAC} addresses is set to 1, which means that only one device is allowed on that port. If a second device with a different \ac{MAC} address connects to the port a violation will be thrown and the port will shut down. In order to reactivate the port it has to be manually shut down and enabled again.
 
 \chapter{DHCP}
 
-\ac{DHCP} is a method to distribute IP addresses in a network automatically. \ac{DHCP} clients are available on nearly every operating system.
+\ac{DHCP} is a method to distribute IP addresses (in form of DHCP leases) in a network automatically. Almost all operating systems have available \ac{DHCP} clients.
 
 The router was configured to act as \ac{DHCP} server, distributing IP addresses to clients in the \ac{VLAN}s.
 
@@ -249,12 +255,11 @@ ip dhcp pool VLAN10
  default-router 192.168.1.1
 \end{lstlisting}
 
-With these commands (\ref{lst:dhcp}) the router will act as a \ac{DHCP} server and will distribute IP addresses in the \texttt{192.168.1.0/25} subnet. Those commands were also entered for the other VLANs.
+With these commands (\ref{lst:dhcp}) the router will act as a \ac{DHCP} server and will distribute IP addresses in the \texttt{192.168.1.0/25} subnet. Those commands were also set for the other VLANs.
 
 \section{DHCP Snooping}
 
-DHCP Snooping is a method to block rogue DHCP servers which can handle out wrong IP addresses. It can also be used to limit the amount of IP addresses a port can request in a given amount of time, to counter IP address shortage. DHCP responses may also be only allowed from certain ports, not access ports where clients are connected.
-As DHCP has no authentication method this must be used if security is important.
+DHCP Snooping is a method to block rogue DHCP server which can handle out wrong IP addresses. It can also be used to limit the amount of IP addresses a port can request in a given amount of time in order to counterfeit IP address shortage. DHCP responses may also be restricted to certain ports. In example an access port, where a client computer is connected, should nit issue DHCP responses. As DHCP has no authentication mechanism DHCP snooping should be implemented if security is from importance.
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={DHCP Snooping},label={lst:dhcp_snop},language={}]
@@ -266,11 +271,11 @@ int fa0/21
 ip dhcp snooping trust
 \end{lstlisting}
 
-The access switches have been configured for DHCP snooping, as can be seen in listing \ref{lst:dhcp_snop}. The trunk ports have been configured as trusted DHCP interfaces.
+The access switches have been configured for DHCP snooping, as seen in listing \ref{lst:dhcp_snop}. The trunk ports have been configured as trusted DHCP interfaces.
 
-To test this setup, we removed the trust from one of the interfaces, and tried to get an IP from the router, which then failed.
+To test this setup, the trust from one of the uplink interfaces to the router was removed, thus the client computer wasn't able to get a DHCP lease from the router anymore.
 
-However, a rogue DHCP server in the same subnet was still possible. We could not determine what caused this, as the binding table remained empty, even if a DHCP lease was given out to a valid client.
+However, a rogue DHCP server in the same subnet would still be possible. We could not determine the root of this problem, because the binding table always remained empty, even if a DHCP lease was sent to a valid client.
 
 Most likely the \texttt{no ip dhcp snooping trust} and \texttt{ip dhcp snooping limit rate 10} had to be used on the access ports, but we did not use this command, so this might be the reason it did not work as expected. The last command would have limited the amount of DHCP packets to 10 per minute.
 
