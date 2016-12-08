@@ -1,0 +1,148 @@
+\chapter{Topology}
+
+\thispagestyle{standard}
+\pagestyle{standard}
+
+The following topology (figure \ref{img:topo}, taken from the Moodle instructions) had to be recreated in the lab.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{img/topo.png}
+	\caption{Topology (Moodle)}
+	\label{img:topo}
+\end{figure}
+
+Each device was configured with basic settings like hostname, \ac{MOTD}, a secret enable password, disabled IP domain lookup, synchronous logging on line console 0 and the service password-encryption, which prevents passwords from being displayed in clear-text in the start-up and running configuration. The important part is that the clock-rate for the serial interface has to be configured on the \ac{DCE} device.
+
+\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
+\begin{lstlisting}[caption={Setting the clock-rate on Router A},label={lst:clockrate},language={}]
+interface Serial0/0/0
+ bandwidth 64
+ ip address 172.16.1.1 255.255.255.252
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 1 md5 7 094F471A1A0A
+ clock rate 64000
+\end{lstlisting}
+
+\ac{OSPF} is a routing protocol for \ac{IP} networks. It uses a \ac{LSR} algorithm and falls into the group of interior routing protocols, operating within a single \ac{AS}.
+Concerning the \ac{OSPF} routing, every router assigns its known networks to the \ac{OSPF} routing process with area 0.
+\newpage
+\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
+\begin{lstlisting}[caption={\ac{OSPF} routing example router A},label={lst:ospf},language={}]
+router ospf 1
+ area 0 authentication message-digest
+ network 172.16.1.0 0.0.0.3 area 0
+ network 172.17.1.0 0.0.0.255 area 0
+\end{lstlisting}
+
+"nginx" has been set up as a webserver on a linux pc with default configuration for http (IP address for the webserver is "10.1.1.254"). Ping and webserver access from the user-pc to the webserver has been successful as shown in (figure \ref{img:GuterWebserverScreenshot}). Be sure to disavle the windows firewall on both devices to allow ping.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{img/GuterWebserverScreenshot.png}
+	\caption{Webserver access}
+	\label{img:GuterWebserverScreenshot}
+\end{figure}
+
+For this topology the ping command from the user pc to the webserver took on average 18ms and had a remaining \ac{TTL} of 61.
+The tracert command as shown in (figure \ref{img:TracertGuterWebserver}) from the user pc to the webserver shows that a package needs 4 hops to reach the webserver.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{img/TracertGuterWebserver.png}
+	\caption{Tracert from user pc to good webserver}
+	\label{img:TracertGuterWebserver}
+\end{figure}
+
+\chapter{Router Spoofing}
+
+For the router spoofing attack another router has beed added to the network as seen in (figure \ref{img:Router spoofing topology}, taken from the Moodle instructions). This router also operates in \ac{OSPF} mode. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{img/topo_spoofing.png}
+	\caption{Router spoofing topology}
+	\label{img:Router spoofing topology}
+\end{figure}
+
+Router X is now configured in a way that neighboring routers think this Router B with the webserver in his network. 
+
+\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
+\begin{lstlisting}[caption={\ac{OSPF} configuration on router X},label={lst:ospfRouterX},language={}]
+router ospf 1
+ network 10.1.1.0 0.0.0.255 area 0
+ network 172.17.1.0 0.0.0.255 area 0
+\end{lstlisting}
+
+\ac{OSPF} detects changes in the topology it computes the shortest-path tree for each route using a method based "Dijkstra's algorithm". The bad Router X propagates that he has a network "10.1.1.0/24" with the webserver. This results in a shorter path from the user pc to the webserver. The user pc doesn't know that this is a bad webserver since \ac{OSPF} only detected a shorter path to the webserver. Router C is now storing the route to Router X in the routing table, because this route has the lower path cost. Therefore, a ping from the user pc now goes to the bad server.
+The ping from the user pc to the bad webserver is <1ms with a TTL of 62. Because of the new route the package isn't sent over the serial link whichg results in a shorter response time for the ping command. The tracert command (figure \ref{img:TracertBadWebserver}) shows that the package only needs 3 hops to its destination and the averga response time is <1ms.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{img/TracertBadWebserver.png}
+	\caption{Tracert from user pc to bad webserver}
+	\label{img:TracertBadWebserver}
+\end{figure}
+
+If the user wants to access the webserver again, he will be redirected to the bad webserver, because of the routing table entry in router C which states that the shortest path to the network "10.1.1.0/24" with the webserver is the one via router X.
+(figure \ref{img:BadWebserverScreenshot}) shows the output when accessing the webserver.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{img/BadWebserverScreenshot.png}
+	\caption{Bad webserver access}
+	\label{img:BadWebserverScreenshot}
+\end{figure}
+
+\chapter{Router Authentication}
+
+In this chapter, the router authentication methods are explaned. Router authentication for \ac{OSPF} allows to flexibly authenticate \ac{OSPF} neighbours. This enables \ac{OSPF} routing to exchange routing update information in a secure manner.
+There exist three different types of authentication in OSPF:
+\begin{itemize}
+\item Null authentication: Also called type 0 -> no authentication information is included in the packet header. This is also default.
+\item Plain text authentication: type 1 -> use of simple plain-text passwords
+\item Md5 authentication: typ2 -> use of md5 cryptographic passwords (also not secure anymore!)
+\end{itemize}
+
+OSPFv3 is capable of using SHA1 authentication, which is at least better than MD5 authentication.
+
+\section{Plain Text Authentication}
+
+At first, plain text authentication has been configured.
+The authentication key is configured for each interface separately by use of the following command:
+
+\texttt{ip ospf authentication-key cisco}
+
+Only interfaces, where the authentication key match, can participate in OSPF advertising.
+The following command then enables OSPF authentication for all interfaces inside area 0:
+
+\begin{tabbing}
+\texttt{router} \= \texttt{ospf 1} \\
+\> \texttt{area 0 authentication}
+\end{tabbing}
+
+When the commands above are executed on only Router A and Router C, all OSPF routes that have previously been stated in the routing table (advertised from Router B) are now lost, because Router B doesn’t have the authentication configuration.
+The big disadvantage of plain text authentication is, that the password can be clearly seen in the packet.
+
+\pagebreak
+\section{MD5 Authentication}
+
+First the md5 message digest has to be set on the interfaces:
+\begin{tabbing}
+\texttt{Interf}\= \texttt{ace s0/0/0} \\
+\> \texttt{ip ospf message-digest-key 1 md5 cisco}
+\end{tabbing}
+
+After that, md5 authentication can either be enabled on a per interface basis with the following command:
+\begin{tabbing}
+\texttt{Interf}\= \texttt{ace s0/0/0} \\
+\> \texttt{ip ospf authentication message-digest}
+\end{tabbing}
+   
+Or globally for all interfaces belonging to a specific area:
+\begin{tabbing}
+\texttt{router} \= \texttt{ospf 1} \\
+\> \texttt{area 0 authentication message-digest}
+\end{tabbing}
+
+\chapter{Sniffing Attack and Clear Text Password Router Authentication}
