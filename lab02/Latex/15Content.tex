@@ -3,7 +3,7 @@
 \thispagestyle{standard}
 \pagestyle{standard}
 
-The following topology (figure \ref{img:topo}, taken from the Moodle instructions) had to be recreated in the lab.
+The following topology (figure \ref{img:topo}, taken from Moodle instructions) had to be recreated in the lab.
 
 \begin{figure}[H]
 	\centering
@@ -35,28 +35,30 @@ router ospf 1
  network 172.17.1.0 0.0.0.255 area 0
 \end{lstlisting}
 
-"nginx" has been set up as a webserver on a linux pc with default configuration for http (IP address for the webserver is "10.1.1.254"). Ping and webserver access from the user-pc to the webserver has been successful as shown in (figure \ref{img:GuterWebserverScreenshot}). Be sure to disavle the windows firewall on both devices to allow ping.
+`nginx' has been set up as a webserver on a Linux-PC. The default `index.html' was adapted to show the message \texttt{Guter Webserver!} when accessing the server via a web browser. \\
+The IP address has been assigned to `10.1.1.254'.
+Ping and Webserver access from the User-PC to the server has been successful as shown in (figure \ref{img:GuterWebserverScreenshot}). The firewall on the Windows machines was disabled to prevent accidental ICMP failures.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth]{img/GuterWebserverScreenshot.png}
+	\includegraphics[width=1.0\textwidth]{img/GuterWebserverScreenshot.png}
 	\caption{Webserver access}
 	\label{img:GuterWebserverScreenshot}
 \end{figure}
 
-For this topology the ping command from the user pc to the webserver took on average 18ms and had a remaining \ac{TTL} of 61.
-The tracert command as shown in (figure \ref{img:TracertGuterWebserver}) from the user pc to the webserver shows that a package needs 4 hops to reach the webserver.
+For this topology the ping command from the user PC to the Linux-PC hosting the webserver took on average of 18ms and had a remaining \ac{TTL} value of 61.
+The `tracert' command as shown in (figure \ref{img:TracertGuterWebserver}) from the user PC to the server shows that it takes 4 hops to reach the server.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth]{img/TracertGuterWebserver.png}
+	\includegraphics[width=1.0\textwidth]{img/TracertGuterWebserver.png}
 	\caption{Tracert from user pc to good webserver}
 	\label{img:TracertGuterWebserver}
 \end{figure}
 
 \chapter{Router Spoofing}
 
-For the router spoofing attack another router has beed added to the network as seen in (figure \ref{img:Router spoofing topology}, taken from the Moodle instructions). This router also operates in \ac{OSPF} mode. 
+For the router spoofing attack another router has been added to the network as seen in (figure \ref{img:Router spoofing topology}, taken from Moodle instructions). This router also operates in \ac{OSPF} mode. 
 
 \begin{figure}[H]
 	\centering
@@ -65,7 +67,7 @@ For the router spoofing attack another router has beed added to the network as s
 	\label{img:Router spoofing topology}
 \end{figure}
 
-Router X is now configured in a way that neighboring routers think this Router B with the webserver in his network. 
+Router X is now configured to announce the same networks as Router B. The difference between those routers is that Router X is connected via a faster connection (100 Mbps vs. 64 Kbps) then Router B.
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={\ac{OSPF} configuration on router X},label={lst:ospfRouterX},language={}]
@@ -74,12 +76,13 @@ router ospf 1
  network 172.17.1.0 0.0.0.255 area 0
 \end{lstlisting}
 
-\ac{OSPF} detects changes in the topology it computes the shortest-path tree for each route using a method based "Dijkstra's algorithm". The bad Router X propagates that he has a network "10.1.1.0/24" with the webserver. This results in a shorter path from the user pc to the webserver. The user pc doesn't know that this is a bad webserver since \ac{OSPF} only detected a shorter path to the webserver. Router C is now storing the route to Router X in the routing table, because this route has the lower path cost. Therefore, a ping from the user pc now goes to the bad server.
-The ping from the user pc to the bad webserver is <1ms with a TTL of 62. Because of the new route the package isn't sent over the serial link whichg results in a shorter response time for the ping command. The tracert command (figure \ref{img:TracertBadWebserver}) shows that the package only needs 3 hops to its destination and the averga response time is <1ms.
+\ac{OSPF} detects changes in the topology and computes the shortest-path tree for each route using a method based "Dijkstra's algorithm". The bad Router X propagates that he has a network "10.1.1.0/24" with the webserver.
+Because of the faster connection to the 10.1.1.0/24 network, this results in a shorter path from the user pc to the webserver. The user pc doesn't know that this is a bad webserver since \ac{OSPF} only detected a shorter path to the webserver. Router C is now storing the route to Router X in the routing table, because this route has the lower path cost. Therefore, a ping from the user pc now goes to the bad server.
+The ping from the user pc to the bad webserver is <1ms with a TTL of 62. Because of the new route the package isn't sent over the serial link which results in a shorter response time for the ping command. The `tracert' output (figure \ref{img:TracertBadWebserver}) shows that the package only needs 3 hops to its destination and the average response time is <1ms.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth]{img/TracertBadWebserver.png}
+	\includegraphics[width=1.0\textwidth]{img/TracertBadWebserver.png}
 	\caption{Tracert from user pc to bad webserver}
 	\label{img:TracertBadWebserver}
 \end{figure}
@@ -89,7 +92,7 @@ If the user wants to access the webserver again, he will be redirected to the ba
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth]{img/BadWebserverScreenshot.png}
+	\includegraphics[width=1.0\textwidth]{img/BadWebserverScreenshot.png}
 	\caption{Bad webserver access}
 	\label{img:BadWebserverScreenshot}
 \end{figure}
