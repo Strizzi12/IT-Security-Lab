@@ -108,7 +108,7 @@ There are three different types of authentication in OSPF:
 \begin{itemize}
 \item Null authentication: Also called type 0 -> no authentication information is included in the packet header. This is the default setting.
 \item Plain text authentication: type 1 -> use of simple plain-text passwords
-\item MD5 authentication: type 2 -> use of MD5 cryptographic passwords (also not secure anymore!)
+\item MD5 authentication: type 2 -> use of MD5 hashed passwords (also not secure anymore!)
 \end{itemize}
 
 OSPFv3 is capable of using SHA1 authentication, which is at least better than MD5 authentication.
@@ -128,8 +128,8 @@ The following command then enables OSPF authentication for all interfaces inside
 \> \texttt{area 0 authentication}
 \end{tabbing}
 
-When the commands above are executed solely on Router A and Router C, all OSPF routes that were advertised from Router B are now lost, because Router B doesn't have the authentication configuration.
-The main disadvantage of plain text authentication is, that the password can be clearly seen in the packet.
+When the commands above are executed solely on Router A and Router C, all OSPF routes that were advertised from Router B are now lost, because Router B doesn't have the authentication configuration. \\
+The main disadvantage of plain text authentication is, that the password can be clearly seen in the packet, as can be seen in figure % \ref{img:}
 
 \pagebreak
 \section{MD5 Authentication}
