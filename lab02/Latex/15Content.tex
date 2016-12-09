@@ -1,3 +1,4 @@
+
 \chapter{Topology}
 
 \thispagestyle{standard}
@@ -35,9 +36,9 @@ router ospf 1
  network 172.17.1.0 0.0.0.255 area 0
 \end{lstlisting}
 
-`nginx' has been set up as a webserver on a Linux-PC. The default `index.html' was adapted to show the message \texttt{Guter Webserver!} when accessing the server via a web browser. \\
+`nginx' has been set up as a webserver on a Linux-PC. The default `index.html' was adapted to show the message \texttt{"Guter Webserver!"} when accessing the server via a web browser. \\
 The IP address has been assigned to `10.1.1.254'.
-Ping and Webserver access from the User-PC to the server has been successful as shown in (figure \ref{img:GuterWebserverScreenshot}). The firewall on the Windows machines was disabled to prevent accidental ICMP failures.
+Ping and webserver access from the User-PC to the server has been successful as shown in (figure \ref{img:GuterWebserverScreenshot}). The firewall on the Windows machines was disabled to prevent accidental ICMP failures.
 
 \begin{figure}[H]
 	\centering
@@ -47,7 +48,7 @@ Ping and Webserver access from the User-PC to the server has been successful as 
 \end{figure}
 
 For this topology the ping command from the user PC to the Linux-PC hosting the webserver took on average of 18ms and had a remaining \ac{TTL} value of 61.
-The `tracert' command as shown in (figure \ref{img:TracertGuterWebserver}) from the user PC to the server shows that it takes 4 hops to reach the server.
+The `tracert' output as shown in (figure \ref{img:TracertGuterWebserver}) from the user PC to the server shows that it takes 4 hops to reach the server.
 
 \begin{figure}[H]
 	\centering
@@ -67,7 +68,9 @@ For the router spoofing attack another router has been added to the network as s
 	\label{img:Router spoofing topology}
 \end{figure}
 
-Router X is now configured to announce the same networks as Router B. The difference between those routers is that Router X is connected via a faster connection (100 Mbps vs. 64 Kbps) then Router B.
+Router X is now configured to announce the same networks as Router B. The difference between those routers is that Router X is connected via a faster connection (100 Mbps vs. 64 Kbps) then Router B. \\
+
+To also see a difference on the User PC, a second `nginx' was configured on another Linux-PC, this time with \texttt{"Bad Webserver!"} in the `index.html'. 
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={\ac{OSPF} configuration on router X},label={lst:ospfRouterX},language={}]
@@ -76,9 +79,10 @@ router ospf 1
  network 172.17.1.0 0.0.0.255 area 0
 \end{lstlisting}
 
-\ac{OSPF} detects changes in the topology and computes the shortest-path tree for each route using a method based "Dijkstra's algorithm". The bad Router X propagates that he has a network "10.1.1.0/24" with the webserver.
-Because of the faster connection to the 10.1.1.0/24 network, this results in a shorter path from the user pc to the webserver. The user pc doesn't know that this is a bad webserver since \ac{OSPF} only detected a shorter path to the webserver. Router C is now storing the route to Router X in the routing table, because this route has the lower path cost. Therefore, a ping from the user pc now goes to the bad server.
-The ping from the user pc to the bad webserver is <1ms with a TTL of 62. Because of the new route the package isn't sent over the serial link which results in a shorter response time for the ping command. The `tracert' output (figure \ref{img:TracertBadWebserver}) shows that the package only needs 3 hops to its destination and the average response time is <1ms.
+\ac{OSPF} detects changes in the topology and computes the shortest-path tree for each route using a method based "Dijkstra's algorithm". The bad Router X propagates that he has a better route to network "10.1.1.0/24". \\
+This results in a shorter path from the user pc to the webserver. The user pc doesn't know that this is the bad webserver since \ac{OSPF} only detected a shorter path to the webserver. The router does not know that the two networks, although having the same subnet, are not the same. \\
+Therefore, an ICMP Echo request (sent with \texttt{ping}) from the user pc will now be routed to the bad server.
+The latency from the user pc to the bad server is now <1ms with a TTL value of 62. Because of the new route the packet isn't sent over the serial link, instead it is being transmitted via the faster Ethernet connection to Router X. The `tracert' output (figure \ref{img:TracertBadWebserver}) shows that the packet only needs 3 hops to its destination and has an average response time of <1ms.
 
 \begin{figure}[H]
 	\centering
@@ -87,8 +91,8 @@ The ping from the user pc to the bad webserver is <1ms with a TTL of 62. Because
 	\label{img:TracertBadWebserver}
 \end{figure}
 
-If the user wants to access the webserver again, he will be redirected to the bad webserver, because of the routing table entry in router C which states that the shortest path to the network "10.1.1.0/24" with the webserver is the one via router X.
-(figure \ref{img:BadWebserverScreenshot}) shows the output when accessing the webserver.
+If the user accesses the webserver again, he will be redirected to the bad webserver, because of the routing table entry in Router C which states that the shortest path to the network "10.1.1.0/24" is reached via Router X.
+figure \ref{img:BadWebserverScreenshot} shows the output when accessing the webserver again.
 
 \begin{figure}[H]
 	\centering
@@ -99,12 +103,12 @@ If the user wants to access the webserver again, he will be redirected to the ba
 
 \chapter{Router Authentication}
 
-In this chapter, the router authentication methods are explaned. Router authentication for \ac{OSPF} allows to flexibly authenticate \ac{OSPF} neighbours. This enables \ac{OSPF} routing to exchange routing update information in a secure manner.
-There exist three different types of authentication in OSPF:
+In this chapter, router authentication methods are explained. Router authentication for \ac{OSPF} allows to flexibly authenticate \ac{OSPF} neighbours. This enables \ac{OSPF} routing to exchange routing update information in a secure manner.
+There are three different types of authentication in OSPF:
 \begin{itemize}
-\item Null authentication: Also called type 0 -> no authentication information is included in the packet header. This is also default.
+\item Null authentication: Also called type 0 -> no authentication information is included in the packet header. This is the default setting.
 \item Plain text authentication: type 1 -> use of simple plain-text passwords
-\item Md5 authentication: typ2 -> use of md5 cryptographic passwords (also not secure anymore!)
+\item MD5 authentication: type 2 -> use of MD5 cryptographic passwords (also not secure anymore!)
 \end{itemize}
 
 OSPFv3 is capable of using SHA1 authentication, which is at least better than MD5 authentication.
@@ -124,19 +128,19 @@ The following command then enables OSPF authentication for all interfaces inside
 \> \texttt{area 0 authentication}
 \end{tabbing}
 
-When the commands above are executed on only Router A and Router C, all OSPF routes that have previously been stated in the routing table (advertised from Router B) are now lost, because Router B doesn’t have the authentication configuration.
-The big disadvantage of plain text authentication is, that the password can be clearly seen in the packet.
+When the commands above are executed solely on Router A and Router C, all OSPF routes that were advertised from Router B are now lost, because Router B doesn't have the authentication configuration.
+The main disadvantage of plain text authentication is, that the password can be clearly seen in the packet.
 
 \pagebreak
 \section{MD5 Authentication}
 
-First the md5 message digest has to be set on the interfaces:
+First the MD5 message digest has to be set on the interfaces:
 \begin{tabbing}
 \texttt{Interf}\= \texttt{ace s0/0/0} \\
 \> \texttt{ip ospf message-digest-key 1 md5 cisco}
 \end{tabbing}
 
-After that, md5 authentication can either be enabled on a per interface basis with the following command:
+After that, MD5 authentication can either be enabled on a per interface basis with the following command:
 \begin{tabbing}
 \texttt{Interf}\= \texttt{ace s0/0/0} \\
 \> \texttt{ip ospf authentication message-digest}
