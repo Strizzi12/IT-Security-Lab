@@ -180,11 +180,25 @@ Being able to capture the OSPF packets also means the attacker can identify whic
 
 Using MD5 as authentication does not reveal the password anymore. But as MD5 can be broken with standard PC hardware in a short amount of time, this is also no longer secure. To avoid replay attacks a sequence number is also introduced. The MD5 hash seen in figure \ref{img:OSPF_MD5} is generated from all fields in the packet, except the "Auth Crypt Data" field. This ensures that the sequence number is part of the MD5 hash.
 
+If all routers use authentication, any OSPF packets without it will be discarded. This also helps to secure against a potentially misconfigured router in the network.
+
 \section{Cracking MD5 with "John the Ripper"}
 
-"John the Ripper" (\url{http://www.openwall.com/john/}) is a program for cracking different hashing algorithms. We used it to try and calculate the cleartext password from the captured OSPF packets.
+"John the Ripper" (\url{http://www.openwall.com/john/}) is a program for cracking different hashing algorithms. We used it to try and calculate the plaintext password from the captured OSPF packets.
 
 To do this, we saved a separate PCAP file which only contained \ac{OSPF} packets with MD5 authentication.
 
-This file then had to be further processed with `ettercap' to produce a textfile.
+This file then had to be further processed with `ettercap' (\url{https://ettercap.github.io/ettercap}) to produce a textfile which John can read:
 
+\texttt{ettercap -Tqr ospf\_4.pcapng > ospf1.txt}
+
+This textfile then was used in John, which cracked the MD5 seconds in a few seconds. The result can be seen in figure \ref{img:john}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{img/john.png}
+	\caption{John the ripper in action}
+	\label{img:john}
+\end{figure}
+
+The capture file contained of 4 OSPF packets, all of which used the same password `cisco'.
