@@ -129,7 +129,16 @@ The following command then enables OSPF authentication for all interfaces inside
 \end{tabbing}
 
 When the commands above are executed solely on Router A and Router C, all OSPF routes that were advertised from Router B are now lost, because Router B doesn't have the authentication configuration. \\
-The main disadvantage of plain text authentication is, that the password can be clearly seen in the packet, as can be seen in figure % \ref{img:}
+The main disadvantage of plain text authentication is, that the password can be clearly seen in the packet, as can be seen in figure \ref{img:OSPF_Plaintext}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{img/wireshark_ospf_cisco.png}
+	\caption{Wireshark showing the plaintext password}
+	\label{img:OSPF_Plaintext}
+\end{figure}
+
+
 
 \pagebreak
 \section{MD5 Authentication}
@@ -152,4 +161,17 @@ Or globally for all interfaces belonging to a specific area:
 \> \texttt{area 0 authentication message-digest}
 \end{tabbing}
 
+With activated MD5 authentication, the password is no longer visible in plaintext in the Wireshark capture, as can be seen in figure \ref{OSPF_MD5}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{img/wireshark_md5.png}
+	\caption{OSPF capture with MD5 authentication}
+	\label{img:OSPF_MD5}
+\end{figure}
+
+
+
+
 \chapter{Sniffing Attack and Clear Text Password Router Authentication}
+
