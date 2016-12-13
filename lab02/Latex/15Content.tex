@@ -1,3 +1,4 @@
+
 \chapter{Topology}
 
 \thispagestyle{standard}
@@ -15,9 +16,12 @@ The following topology (figure \ref{img:topo}, taken from Moodle instructions) h
 Each device was configured with basic settings like hostname, \ac{MOTD}, a secret enable password, disabled IP domain lookup, synchronous logging on line console 0 and the service password-encryption, which prevents passwords from being displayed in clear-text in the start-up and running configuration. The important part is that the clock-rate for the serial interface has to be configured on the \ac{DCE} device.
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
-\begin{lstlisting}[caption={Configuring IP and clock-rate for Router A},label={lst:clockrate},language={}]
+\begin{lstlisting}[caption={Setting the clock-rate on Router A},label={lst:clockrate},language={}]
 interface Serial0/0/0
+ bandwidth 64
  ip address 172.16.1.1 255.255.255.252
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 1 md5 7 094F471A1A0A
  clock rate 64000
 \end{lstlisting}
 
@@ -174,7 +178,7 @@ Using a PC connected to \texttt{Switch1} we were able to capture the OSPF packet
 The null and plaintext authentication have obvious security problems. An attacker how can sniff packets can then enter the key on the malicious router and announce different routes.
 Being able to capture the OSPF packets also means the attacker can identify which networks are announced by which router, which allows for easier configuration of the `bad Webserver'.
 
-Using MD5 as authentication does not reveal the password anymore. But as MD5 can be broken with standard PC hardware in a short amount of time, this is also no longer secure. To avoid replay attacks a sequence number is also introduced. The MD5 hash seen in figure \ref{img:OSPF_MD5} is generated from all fields in the packet, except the "Auth Crypt Data" field. This ensures that the sequence number is part of the MD5 hash.
+Using MD5 as authentication does not reveal the password anymore. But as MD5 can be broken with standard PC hardware in a short amount of time, this is also no longer secure. To avoid replay attacks a sequence number is also introduced. The MD5 hash seen in figure \ref{img:OSPF_MD5} "Auth Crypt Data" is generated (RFC2328) which also includes the sequence number as source.
 
 If all routers use authentication, any OSPF packets without it will be discarded. This also helps to secure against a potentially misconfigured router in the network.
 
