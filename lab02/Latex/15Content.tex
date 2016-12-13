@@ -1,4 +1,3 @@
-
 \chapter{Topology}
 
 \thispagestyle{standard}
@@ -16,12 +15,9 @@ The following topology (figure \ref{img:topo}, taken from Moodle instructions) h
 Each device was configured with basic settings like hostname, \ac{MOTD}, a secret enable password, disabled IP domain lookup, synchronous logging on line console 0 and the service password-encryption, which prevents passwords from being displayed in clear-text in the start-up and running configuration. The important part is that the clock-rate for the serial interface has to be configured on the \ac{DCE} device.
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
-\begin{lstlisting}[caption={Setting the clock-rate on Router A},label={lst:clockrate},language={}]
+\begin{lstlisting}[caption={Configuring IP and clock-rate for Router A},label={lst:clockrate},language={}]
 interface Serial0/0/0
- bandwidth 64
  ip address 172.16.1.1 255.255.255.252
- ip ospf authentication message-digest
- ip ospf message-digest-key 1 md5 7 094F471A1A0A
  clock rate 64000
 \end{lstlisting}
 
