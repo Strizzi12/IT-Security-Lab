@@ -36,9 +36,10 @@ router ospf 1
  network 172.17.1.0 0.0.0.255 area 0
 \end{lstlisting}
 
-`nginx' has been set up as a webserver on a Linux-PC. The default `index.html' was adapted to show the message \texttt{"Guter Webserver!"} when accessing the server via a web browser. \\
+`Nginx' has been set up as a webserver on a Linux-PC. The default `index.html' was adapted to show the message \texttt{"Guter Webserver!"} when accessing the server via a web browser. 
+
 The IP address has been assigned to `10.1.1.254'.
-Ping and webserver access from the User-PC to the server has been successful as shown in (figure \ref{img:GuterWebserverScreenshot}). The firewall on the Windows machines was disabled to prevent accidental ICMP failures.
+Ping and webserver access from the User-PC to the server has been successful as shown in (figure \ref{img:GuterWebserverScreenshot}). The firewall on the Windows machines was disabled to prevent accidental ICMP packet rejects.
 
 \begin{figure}[H]
 	\centering
@@ -47,8 +48,8 @@ Ping and webserver access from the User-PC to the server has been successful as 
 	\label{img:GuterWebserverScreenshot}
 \end{figure}
 
-For this topology the ping command from the user PC to the Linux-PC hosting the webserver took on average of 18ms and had a remaining \ac{TTL} value of 61.
-The `tracert' output as shown in (figure \ref{img:TracertGuterWebserver}) from the user PC to the server shows that it takes 4 hops to reach the server.
+For this topology (and the respected route through the network), the round-trip time from the user PC to the Linux-PC hosting the webserver was 18ms on average and had a remaining \ac{TTL} value of 61. \\
+The `tracert' output, as shown in (figure \ref{img:TracertGuterWebserver}) from the user PC to the server, shows that it took 4 hops to reach the server.
 
 \begin{figure}[H]
 	\centering
@@ -68,9 +69,9 @@ For the router spoofing attack another router has been added to the network as s
 	\label{img:Router spoofing topology}
 \end{figure}
 
-Router X is now configured to announce the same networks as Router B. The difference between those routers is that Router X is connected via a faster connection (100 Mbps vs. 64 Kbps) then Router B. \\
+Router X is now configured to advertise the same networks as Router B. The difference between those routers is, that Router X is connected Router A via a faster connection (100 Mbps vs. 64 Kbps) than Router B.
 
-To also see a difference on the User PC, a second `nginx' was configured on another Linux-PC, this time with \texttt{"Bad Webserver!"} in the `index.html'. 
+To also see a difference on the User PC, a second `nginx' server was setup on another Linux-PC, this time containing \texttt{"Bad Webserver!"} in the `index.html'. 
 
 \lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
 \begin{lstlisting}[caption={\ac{OSPF} configuration on router X},label={lst:ospfRouterX},language={}]
@@ -79,10 +80,10 @@ router ospf 1
  network 172.17.1.0 0.0.0.255 area 0
 \end{lstlisting}
 
-\ac{OSPF} detects changes in the topology and computes the shortest-path tree for each route using a method based "Dijkstra's algorithm". The bad Router X propagates that he has a better route to network "10.1.1.0/24". \\
-This results in a shorter path from the user pc to the webserver. The user pc doesn't know that this is the bad webserver since \ac{OSPF} only detected a shorter path to the webserver. The router does not know that the two networks, although having the same subnet, are not the same. \\
+\ac{OSPF} detects changes in the topology and computes the shortest-path tree for each route based on the "Dijkstra's algorithm". The bad Router X propagates that he has a better route to network "10.1.1.0/24". \\
+This results in a shorter path from the user pc to the webserver. The user pc doesn't know that this is the bad webserver since \ac{OSPF} only detected a shorter path. The router does not know that the two networks, although having the same subnet, are not the same. \\
 Therefore, an ICMP Echo request (sent with \texttt{ping}) from the user pc will now be routed to the bad server.
-The latency from the user pc to the bad server is now <1ms with a TTL value of 62. Because of the new route the packet isn't sent over the serial link, instead it is being transmitted via the faster Ethernet connection to Router X. The `tracert' output (figure \ref{img:TracertBadWebserver}) shows that the packet only needs 3 hops to its destination and has an average response time of <1ms.
+The round-trip time from the user pc to the bad server is now <1ms with a TTL value of 62 (one hop less). Because of the new route the packet isn't sent over the serial link, but instead is being transmitted via the faster Ethernet connection to Router X. The `tracert' output (figure \ref{img:TracertBadWebserver}) shows that the packet only needs 3 hops to its destination and has an average round-trip time of <1ms.
 
 \begin{figure}[H]
 	\centering
@@ -92,7 +93,7 @@ The latency from the user pc to the bad server is now <1ms with a TTL value of 6
 \end{figure}
 
 If the user accesses the webserver again, he will be redirected to the bad webserver, because of the routing table entry in Router C which states that the shortest path to the network "10.1.1.0/24" is reached via Router X.
-figure \ref{img:BadWebserverScreenshot} shows the output when accessing the webserver again.
+Figure \ref{img:BadWebserverScreenshot} shows the output when accessing the webserver again.
 
 \begin{figure}[H]
 	\centering
@@ -103,12 +104,12 @@ figure \ref{img:BadWebserverScreenshot} shows the output when accessing the webs
 
 \chapter{Router Authentication}
 
-In this chapter, router authentication methods are explained. Router authentication for \ac{OSPF} allows to flexibly authenticate \ac{OSPF} neighbours. This enables \ac{OSPF} routing to exchange routing update information in a secure manner.
+In this chapter, router authentication methods are explained. Router authentication for \ac{OSPF} allows to flexibly authenticate \ac{OSPF} neighbours. This enables \ac{OSPF} routing to exchange routing update information in a more secure manner.
 There are three different types of authentication in OSPF:
 \begin{itemize}
-\item Null authentication: Also called type 0 -> no authentication information is included in the packet header. This is the default setting.
-\item Plain text authentication: type 1 -> use of simple plain-text passwords
-\item MD5 authentication: type 2 -> use of MD5 hashed passwords (also not secure anymore!)
+\item Null authentication: Also called type 0 $\rightarrow$ no authentication information is included in the packet header. This is the default setting.
+\item Plain text authentication: type 1 $\rightarrow$ use of simple plain-text passwords.
+\item MD5 authentication: type 2 $\rightarrow$ use of MD5 hashed passwords (also not secure anymore!)
 \end{itemize}
 
 OSPFv3 is capable of using SHA1 authentication, which is at least better than MD5 authentication.
@@ -120,7 +121,7 @@ The authentication key is configured for each interface separately by use of the
 
 \texttt{ip ospf authentication-key cisco}
 
-Only interfaces, where the authentication key match, can participate in OSPF advertising.
+Only interfaces, where the authentication key matches, can participate in OSPF advertising.
 The following command then enables OSPF authentication for all interfaces inside area 0:
 
 \begin{tabbing}
@@ -129,7 +130,7 @@ The following command then enables OSPF authentication for all interfaces inside
 \end{tabbing}
 
 When the commands above are executed solely on Router A and Router C, all OSPF routes that were advertised from Router B are now lost, because Router B doesn't have the authentication configuration. \\
-The main disadvantage of plain text authentication is, that the password can be clearly seen in the packet, as can be seen in figure \ref{img:OSPF_Plaintext}.
+The main disadvantage of plain text authentication is, that the password can be clearly seen in the packet, as shown in figure \ref{img:OSPF_Plaintext}.
 
 \begin{figure}[H]
 	\centering
@@ -173,10 +174,10 @@ With activated MD5 authentication, the password is no longer visible in plaintex
 
 \chapter{Sniffing Attack and Clear Text Password Router Authentication}
 
-Using a PC connected to \texttt{Switch1} we were able to capture the OSPF packets seen in the previous section.
+Using a PC connected to \texttt{Switch1}, we were able to capture the OSPF packets seen in the previous section.
 
-The null and plaintext authentication have obvious security problems. An attacker how can sniff packets can then enter the key on the malicious router and announce different routes.
-Being able to capture the OSPF packets also means the attacker can identify which networks are announced by which router, which allows for easier configuration of the `bad Webserver'.
+The null and plaintext authentication methods have obvious security problems. An attacker, who can sniff packets, can then enter the key on the malicious router and advertise different routes.
+Being able to capture the OSPF packets also means the attacker can identify which networks are advertised by which router, which allows for easier configuration of the `bad webserver'.
 
 Using MD5 as authentication does not reveal the password anymore. But as MD5 can be broken with standard PC hardware in a short amount of time, this is also no longer secure. To avoid replay attacks a sequence number is also introduced. The MD5 hash seen in figure \ref{img:OSPF_MD5} "Auth Crypt Data" is generated (RFC2328) which also includes the sequence number as source.
 
@@ -192,7 +193,7 @@ This file then had to be further processed with `ettercap' (\url{https://etterca
 
 \texttt{ettercap -Tqr ospf\_4.pcapng > ospf1.txt}
 
-This textfile then was used in John, which cracked the MD5 seconds in a few seconds. The result can be seen in figure \ref{img:john}.
+This textfile then was used by John, which cracked the MD5 hash in a few seconds. The result can be seen in figure \ref{img:john}.
 
 \begin{figure}[H]
 	\centering
@@ -201,4 +202,4 @@ This textfile then was used in John, which cracked the MD5 seconds in a few seco
 	\label{img:john}
 \end{figure}
 
-The capture file contained of 4 OSPF packets, all of which used the same password `cisco'.
+The capture file contained four MD5 hashes, whereby every hash contained the same password `cisco'.
