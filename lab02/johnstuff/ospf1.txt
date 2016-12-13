@@ -1,0 +1,29 @@
+^[[1mettercap 0.8.2^[[0m copyright 2001-2015 Ettercap Development Team
+
+Reading from ospf_4.pcapng
+Privileges dropped to EUID 65534 EGID 65534...
+
+  33 plugins
+  42 protocol dissectors
+  57 ports monitored
+20388 mac vendor fingerprint
+1766 tcp OS fingerprint
+2182 known services
+Lua: no scripts were specified, not starting up!
+
+Starting Unified sniffing...
+
+OSPF-224.0.0.5-0:$netmd5$02010030ac110101000000000000000200000110583584ccffffff00000a120100000028ac110102ac110101c0a80101$7bc9c557d620a9d07145215a3d4b4345
+OSPF-224.0.0.5-0:$netmd5$02010030c0a80101000000000000000200000110583582eaffffff00000a120100000028ac110102ac110101ac110101$0a5c9b8704f0a034e82bb45abec4c143
+OSPF-224.0.0.5-0:$netmd5$02010030ac110101000000000000000200000110583584d5ffffff00000a120100000028ac110102ac110101c0a80101$646162a66522951a8a6cb04325173678
+OSPF-224.0.0.5-0:$netmd5$02010030c0a80101000000000000000200000110583582f4ffffff00000a120100000028ac110102ac110101ac110101$1baef9ce9951b0b6b5c3f695bab39120
+
+
+Capture file read completely, please exit at your convenience.
+
+
+End of dump file...
+
+Terminating ettercap...
+Lua cleanup complete!
+Unified sniffing was stopped.
