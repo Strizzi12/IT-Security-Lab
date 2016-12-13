@@ -161,7 +161,7 @@ Or globally for all interfaces belonging to a specific area:
 \> \texttt{area 0 authentication message-digest}
 \end{tabbing}
 
-With activated MD5 authentication, the password is no longer visible in plaintext in the Wireshark capture, as can be seen in figure \ref{OSPF_MD5}.
+With activated MD5 authentication, the password is no longer visible in plaintext in the Wireshark capture, as can be seen in figure \ref{img:OSPF_MD5}.
 
 \begin{figure}[H]
 	\centering
@@ -171,7 +171,20 @@ With activated MD5 authentication, the password is no longer visible in plaintex
 \end{figure}
 
 
-
-
 \chapter{Sniffing Attack and Clear Text Password Router Authentication}
+
+Using a PC connected to \texttt{Switch1} we were able to capture the OSPF packets seen in the previous section.
+
+The null and plaintext authentication have obvious security problems. An attacker how can sniff packets can then enter the key on the malicious router and announce different routes.
+Being able to capture the OSPF packets also means the attacker can identify which networks are announced by which router, which allows for easier configuration of the `bad Webserver'.
+
+Using MD5 as authentication does not reveal the password anymore. But as MD5 can be broken with standard PC hardware in a short amount of time, this is also no longer secure. To avoid replay attacks a sequence number is also introduced. The MD5 hash seen in figure \ref{img:OSPF_MD5} is generated from all fields in the packet, except the "Auth Crypt Data" field. This ensures that the sequence number is part of the MD5 hash.
+
+\section{Cracking MD5 with "John the Ripper"}
+
+"John the Ripper" (\url{http://www.openwall.com/john/}) is a program for cracking different hashing algorithms. We used it to try and calculate the cleartext password from the captured OSPF packets.
+
+To do this, we saved a separate PCAP file which only contained \ac{OSPF} packets with MD5 authentication.
+
+This file then had to be further processed with `ettercap' to produce a textfile.
 
