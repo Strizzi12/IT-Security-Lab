@@ -1,205 +1,58 @@
 % !TeX root = 00General.tex
-\chapter{Topology}
-
 \thispagestyle{standard}
 \pagestyle{standard}
+\chapter{Network Reconnaissance}
 
-The following topology (figure \ref{img:topo}, taken from Moodle instructions) had to be recreated in the lab.
+\section{Network Ping Sweep}
+
+In this part information about hosts in a connected network is gathered.
+With the help of the Kali VM a \texttt{nmap} Ping Sweep command is executed to gather information of the connected devices within the network of the given IP.\\
+\texttt{nmap -sP 172.16.1.*}
+
+The information gathered are the IP address of the connected device and his MAC address.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth]{img/topo.png}
-	\caption{Topology (Moodle)}
-	\label{img:topo}
+	\includegraphics[width=0.9\textwidth]{img/2_1_Network_Ping_Sweep_Kali.PNG}
+	\caption{Network Ping Sweep with Kali VM}
+	\label{img:network ping sweep}
 \end{figure}
 
-Each device was configured with basic settings like hostname, \ac{MOTD}, a secret enable password, disabled IP domain lookup, synchronous logging on line console 0 and the service password-encryption, which prevents passwords from being displayed in clear-text in the start-up and running configuration. The important part is that the clock-rate for the serial interface has to be configured on the \ac{DCE} device.
+After the switch to the Ubuntu VM we can analyze the Wireshark trace we started in first place. The trace shows that the \texttt{nmap} Ping Sweep command executes an \ac{ARP}-request on every host on the given IP network range. If a host is available he answers with his MAC address.
 
-\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
-\begin{lstlisting}[caption={Setting the clock-rate on Router A},label={lst:clockrate},language={}]
-interface Serial0/0/0
- bandwidth 64
- ip address 172.16.1.1 255.255.255.252
- ip ospf authentication message-digest
- ip ospf message-digest-key 1 md5 7 094F471A1A0A
- clock rate 64000
-\end{lstlisting}
+\textit{Advanced:}\\
+If a system detects a certain amount of new \ac{ARP}-requests on every host system in a network then this could be a sign for an intrution. Since \ac{ARP} is a stateless protocol, hosts in the network can be compromised by spoofing with falsified IP-MAC pairs.
 
-\ac{OSPF} is a routing protocol for \ac{IP} networks. It uses a \ac{LSR} algorithm and falls into the group of interior routing protocols, operating within a single \ac{AS}.
-Concerning the \ac{OSPF} routing, every router assigns its known networks to the \ac{OSPF} routing process with area 0.
+\section{OS Detection}
+
+Informations about a specific host in the network are gathered. With the help of the Kali VM an OS detection command is executed.\\
+\texttt{nmap -O -v 172.16.1.X}
 \newpage
-\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
-\begin{lstlisting}[caption={\ac{OSPF} routing example router A},label={lst:ospf},language={}]
-router ospf 1
- area 0 authentication message-digest
- network 172.16.1.0 0.0.0.3 area 0
- network 172.17.1.0 0.0.0.255 area 0
-\end{lstlisting}
-
-`Nginx' has been set up as a webserver on a Linux-PC. The default `index.html' was adapted to show the message \texttt{"Guter Webserver!"} when accessing the server via a web browser. 
-
-The IP address has been assigned to `10.1.1.254'.
-Ping and webserver access from the User-PC to the server has been successful as shown in (figure \ref{img:GuterWebserverScreenshot}). The firewall on the Windows machines was disabled to prevent accidental ICMP packet rejects.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\textwidth]{img/GuterWebserverScreenshot.png}
-	\caption{Webserver access}
-	\label{img:GuterWebserverScreenshot}
-\end{figure}
-
-For this topology (and the respected route through the network), the round-trip time from the user PC to the Linux-PC hosting the webserver was 18ms on average and had a remaining \ac{TTL} value of 61. \\
-The `tracert' output, as shown in (figure \ref{img:TracertGuterWebserver}) from the user PC to the server, shows that it took 4 hops to reach the server.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\textwidth]{img/TracertGuterWebserver.png}
-	\caption{Tracert from user pc to good webserver}
-	\label{img:TracertGuterWebserver}
-\end{figure}
-
-\chapter{Router Spoofing}
-
-For the router spoofing attack another router has been added to the network as seen in (figure \ref{img:Router spoofing topology}, taken from Moodle instructions). This router also operates in \ac{OSPF} mode. 
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.9\textwidth]{img/topo_spoofing.png}
-	\caption{Router spoofing topology}
-	\label{img:Router spoofing topology}
-\end{figure}
-
-Router X is now configured to advertise the same networks as Router B. The difference between those routers is, that Router X is connected Router A via a faster connection (100 Mbps vs. 64 Kbps) than Router B.
-
-To also see a difference on the User PC, a second `nginx' server was setup on another Linux-PC, this time containing \texttt{"Bad Webserver!"} in the `index.html'. 
-
-\lstset{escapeinside={\%*}{*)},numbers=left}%oder numbers=left
-\begin{lstlisting}[caption={\ac{OSPF} configuration on router X},label={lst:ospfRouterX},language={}]
-router ospf 1
- network 10.1.1.0 0.0.0.255 area 0
- network 172.17.1.0 0.0.0.255 area 0
-\end{lstlisting}
-
-\ac{OSPF} detects changes in the topology and computes the shortest-path tree for each route based on the "Dijkstra's algorithm". The bad Router X propagates that he has a better route to network "10.1.1.0/24". \\
-This results in a shorter path from the user pc to the webserver. The user pc doesn't know that this is the bad webserver since \ac{OSPF} only detected a shorter path. The router does not know that the two networks, although having the same subnet, are not the same. \\
-Therefore, an ICMP Echo request (sent with \texttt{ping}) from the user pc will now be routed to the bad server.
-The round-trip time from the user pc to the bad server is now <1ms with a TTL value of 62 (one hop less). Because of the new route the packet isn't sent over the serial link, but instead is being transmitted via the faster Ethernet connection to Router X. The `tracert' output (figure \ref{img:TracertBadWebserver}) shows that the packet only needs 3 hops to its destination and has an average round-trip time of <1ms.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\textwidth]{img/TracertBadWebserver.png}
-	\caption{Tracert from user pc to bad webserver}
-	\label{img:TracertBadWebserver}
-\end{figure}
-
-If the user accesses the webserver again, he will be redirected to the bad webserver, because of the routing table entry in Router C which states that the shortest path to the network "10.1.1.0/24" is reached via Router X.
-Figure \ref{img:BadWebserverScreenshot} shows the output when accessing the webserver again.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\textwidth]{img/BadWebserverScreenshot.png}
-	\caption{Bad webserver access}
-	\label{img:BadWebserverScreenshot}
-\end{figure}
-
-\chapter{Router Authentication}
-
-In this chapter, router authentication methods are explained. Router authentication for \ac{OSPF} allows to flexibly authenticate \ac{OSPF} neighbours. This enables \ac{OSPF} routing to exchange routing update information in a more secure manner.
-There are three different types of authentication in OSPF:
-\begin{itemize}
-\item Null authentication: Also called type 0 $\rightarrow$ no authentication information is included in the packet header. This is the default setting.
-\item Plain text authentication: type 1 $\rightarrow$ use of simple plain-text passwords.
-\item MD5 authentication: type 2 $\rightarrow$ use of MD5 hashed passwords (also not secure anymore!)
+The gathered informations are:
+\begin{itemize}  
+\item Open ports
+\item MAC address
+\item Device type
+\item The running operation system 
+\item The network distance to the host (in hops)
+\item TCP Sequence Prediction
 \end{itemize}
-
-OSPFv3 is capable of using SHA1 authentication, which is at least better than MD5 authentication.
-
-\section{Plain Text Authentication}
-
-At first, plain text authentication has been configured.
-The authentication key is configured for each interface separately by use of the following command:
-
-\texttt{ip ospf authentication-key cisco}
-
-Only interfaces, where the authentication key matches, can participate in OSPF advertising.
-The following command then enables OSPF authentication for all interfaces inside area 0:
-
-\begin{tabbing}
-\texttt{router} \= \texttt{ospf 1} \\
-\> \texttt{area 0 authentication}
-\end{tabbing}
-
-When the commands above are executed solely on Router A and Router C, all OSPF routes that were advertised from Router B are now lost, because Router B doesn't have the authentication configuration. \\
-The main disadvantage of plain text authentication is, that the password can be clearly seen in the packet, as shown in figure \ref{img:OSPF_Plaintext}.
+With these information further steps can be planned and executed to compromise this specific host system.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1.0\textwidth]{img/wireshark_ospf_cisco.png}
-	\caption{Wireshark showing the plaintext password}
-	\label{img:OSPF_Plaintext}
+	\includegraphics[width=0.9\textwidth]{img/2_2_OS_Detection_Kali.PNG}
+	\caption{OS detection nmap command with Kali VM}
+	\label{img:os detection kali}
 \end{figure}
 
+\section{Email Sniffing}
 
+In this part Wireshark is used to listen to packets of the \ac{POP3} protocol. After receiving the authentication packets from the mail server a few \ac{POP3} packages can be found. One of the packets contains a character sequence which is base64-encoded (e.g. \texttt{"AHJla3RvcgByZWt0b3I"}). This sequence can then be decoded with an external decoder to the username and password of the client which tried to authenticate on the mail server (in this example it is \texttt{"rektor rektor"}).
 
-\pagebreak
-\section{MD5 Authentication}
+After sending an receiving an email from the mail server an \ac{SMTP} packet can be found where the sender, receives, subject and the email text is shown in plaintext. When the attack is performed on the Kali VM it shows the same results (base64-decoded authentication and plaintext \ac{SMTP} packet).
 
-First the MD5 message digest has to be set on the interfaces:
-\begin{tabbing}
-\texttt{Interf}\= \texttt{ace s0/0/0} \\
-\> \texttt{ip ospf message-digest-key 1 md5 cisco}
-\end{tabbing}
-
-After that, MD5 authentication can either be enabled on a per interface basis with the following command:
-\begin{tabbing}
-\texttt{Interf}\= \texttt{ace s0/0/0} \\
-\> \texttt{ip ospf authentication message-digest}
-\end{tabbing}
-   
-Or globally for all interfaces belonging to a specific area:
-\begin{tabbing}
-\texttt{router} \= \texttt{ospf 1} \\
-\> \texttt{area 0 authentication message-digest}
-\end{tabbing}
-
-With activated MD5 authentication, the password is no longer visible in plaintext in the Wireshark capture, as can be seen in figure \ref{img:OSPF_MD5}.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\textwidth]{img/wireshark_md5.png}
-	\caption{OSPF capture with MD5 authentication}
-	\label{img:OSPF_MD5}
-\end{figure}
-
-
-\chapter{Sniffing Attack and Clear Text Password Router Authentication}
-
-Using a PC connected to \texttt{Switch1}, we were able to capture the OSPF packets seen in the previous section.
-
-The null and plaintext authentication methods have obvious security problems. An attacker, who can sniff packets, can then enter the key on the malicious router and advertise different routes.
-Being able to capture the OSPF packets also means the attacker can identify which networks are advertised by which router, which allows for easier configuration of the `bad webserver'.
-
-Using MD5 as authentication does not reveal the password anymore. But as MD5 can be broken with standard PC hardware in a short amount of time, this is also no longer secure. To avoid replay attacks a sequence number is also introduced. The MD5 hash seen in figure \ref{img:OSPF_MD5} "Auth Crypt Data" is generated (RFC2328) which also includes the sequence number as source.
-
-If all routers use authentication, any OSPF packets without it will be discarded. This also helps to secure against a potentially misconfigured router in the network.
-
-\section{Cracking MD5 with "John the Ripper"}
-
-"John the Ripper" (\url{http://www.openwall.com/john/}) is a program for cracking different hashing algorithms. We used it to try and calculate the plaintext password from the captured OSPF packets.
-
-To do this, we saved a separate PCAP file which only contained \ac{OSPF} packets with MD5 authentication.
-
-This file then had to be further processed with `ettercap' (\url{https://ettercap.github.io/ettercap}) to produce a textfile which John can read:
-
-\texttt{ettercap -Tqr ospf\_4.pcapng > ospf1.txt}
-
-This textfile then was used by John, which cracked the MD5 hash in a few seconds. The result can be seen in figure \ref{img:john}.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\textwidth]{img/john.png}
-	\caption{John the ripper in action}
-	\label{img:john}
-\end{figure}
-
-The capture file contained four MD5 hashes, whereby every hash contained the same password `cisco'.
+\textit{Advanced:}\\
+To let this attack be successful an non secured transport protocol need to be used and the used \ac{SMTP} needs to be in plaintext.
+One counter-measure is the use of \ac{SSL} for \ac{SMTP} connections. This raises another problem. By default, all \ac{SMTP} servers use port 25. But if you use \ac{SSL} on port 25, non-\ac{SSL} will not be able to connect through that port. And if you use a nonstandard port number, other servers will not be able to find your server.
+Another counter-measure is the use of \ac{TLS} for an \ac{SMTP} connection. Each end of the connection can choose to authenticate the other, or the \ac{TLS} connection can be used purely for privacy. (http://windowsitpro.com/exchange-server/securing-smtp-email-traffic)
