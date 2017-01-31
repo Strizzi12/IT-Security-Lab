@@ -110,10 +110,4 @@ Systems can easily be hacked with brute-force attacks. Since the computing power
 
 \chapter{Counter Measures}
 
-\section{Firewall Updates}
-
-At first the \texttt{"auth.log"} displays all the incorrect ssh-login attempts. 
-
-\section{Dynamic Firewall Updates}
-
-\chapter{Autopwn and Meterpreter}
+At first the \texttt{"auth.log"} displays all the incorrect ssh-login attempts with the \ac{IP} of the host from which the login happened. After applying the firewall rule \texttt{"iptables -A INPUT -s 172.16.1.134 -p tcp -j DROP"} the brute-force output on the Kali VM showed that the connection timed out. When using \texttt{fail2ban} the \ac{IP} address of the host with too many failed login tries will be automatically addded to the iptable.
